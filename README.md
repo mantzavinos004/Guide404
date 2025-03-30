@@ -6,11 +6,16 @@ simple guide for noobs
 1. nano /etc/hosts
 (Harden the web shell)
 
-2. python3 -c 'import pty; pty.spawn("/bin/bash")'
+2. python3 -c 'import pty; pty.spawn("/bin/bash")'   (SHELL HARDERING)
 stty raw -echo; fg
 export TERM=xterm
+or
+script /dev/null -c bash
+stty raw -echo
+fg
+reset
 
-3
+3. 
    
 
 
