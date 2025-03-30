@@ -4,6 +4,13 @@ simple guide for noobs
 ----------------------GENERAL-----------------
 (For every domain you find:)
 1. nano /etc/hosts
+(Harden the web shell)
+
+2. python3 -c 'import pty; pty.spawn("/bin/bash")'
+stty raw -echo; fg
+export TERM=xterm
+
+3
    
 
 
@@ -29,4 +36,23 @@ simple guide for noobs
 -----------------------------HASHES-----------------------------
 1. go at hashcat id tables and ctr+F to searc your hash and take the id
 2. hashcat -m <id> hash.txt /usr/share/wordlists/rockyou.txt
+
+
+
+
+-----------------------------WEBSHELL-----------------------
+(after you get a web shell)
+1. python3 -c 'import pty; pty.spawn("/bin/bash")'
+stty raw -echo; fg
+export TERM=xterm
+2. cat /var/www/limesurvey/application/config/config.php (you might find password for ssh)
+
+
+
+
+
+
+
+
+
 
