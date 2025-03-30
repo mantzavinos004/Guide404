@@ -49,7 +49,17 @@ export TERM=xterm
 
 
 
+-------------------------------PRIV ESCA-------------------------------
 
+1) LINUX
+     a) sudo -l
+     b) netstat -tulpn (google search what is on those ports)
+         ssh -L <port>:127.0.0.1:<port> <name>@<domain>.htb and go at the browser locasion
+
+
+
+
+3) WINDOWS
 
 
 
