@@ -23,3 +23,9 @@ now you have a bash with root priv's
 10) ./bash -p    and spawn a shell with the effective UID of root.
 11) id   ---> euid=0 root
 12) you can cd /root now
+
+
+
+THIS WORKS CAUSE:
+1) THE HOST DIR IS SHARED TO THE HOST AND CONTAINER
+2) WE GOT A ROOT SHELL ON CONTAINER FIRST
