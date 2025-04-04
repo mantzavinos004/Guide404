@@ -1,4 +1,6 @@
 1) rustscan --ulimit 10000 -a IP -- -sC -Pn
 or
-  nmap -sCV -p- I
-2)
+   nmap -sCV -p- I
+2) dirsearch -u and gobuster vhost -u http:// -w /usr/share/wordlists/dirb/small.txt -k --append-domain
+
+3) (FOR DIR ENUMERATION ON YOUR KNOWN DOMAINS)--> gobuster dir http://<example.domain.com>/ -w /usr/share/wordlists/dirb/cmmon.txt
