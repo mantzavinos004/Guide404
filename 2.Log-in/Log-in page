@@ -1,6 +1,6 @@
 First open the code and look for some logic mistakes 
 Then try some sqli 
-
+if you have the code, try to find some mistakes (chatgtp,deepseek). If you find something try to abuse it with burp (some JWT token?)
 
 
 
