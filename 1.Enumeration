@@ -1,0 +1,4 @@
+1) rustscan --ulimit 10000 -a IP -- -sC -Pn
+or
+  nmap -sCV -p- I
+2)
