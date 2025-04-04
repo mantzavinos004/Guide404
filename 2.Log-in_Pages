@@ -1,0 +1,4 @@
+1) open burp
+2) catch a request with random creds
+3) save this items with right click and save... named sql
+4) --> sqlmap -r sql --batch  (for a vulner scan)
