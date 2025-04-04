@@ -1,9 +1,0 @@
-1) open burp
-2) catch a request with random creds
-3) you can play with the creds for a while
-4) save this items with right click and save... named sql
-5) --> sqlmap -r sql --batch  (for a vulner scan)
-    a) Is vulnerable to sqli? then dump the database:--> sqlmap -r sql --batch -D main -T user --dump  (*it might take some time*)
-      Your target are the hashes (usually md5's) or emails of the user/admin. Go to https://crackstation.net/ to crack it :)
-    b) is not vulnerable?
-6) after you got the creds and log in, search for exploits maybe
