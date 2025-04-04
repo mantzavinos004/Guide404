@@ -1,3 +1,9 @@
+First open the code and look for some logic mistakes 
+Then try some sqli 
+
+
+
+
 1) open burp
 2) catch a request with random creds
 3) you can play with the creds for a while
