@@ -1,0 +1,9 @@
+LINUX 
+a) sudo -l 
+b) netstat -tulpn (google search what is on those ports) 
+  ssh -L <port>:127.0.0.1:<port> <nameuser>@<IPtarget>   (do this in your own directory, not in ssh) 
+  and go at the browser locasion--> http://localhost:3000/
+watch the gitea version and search for exploit!
+
+
+WINDOWS
