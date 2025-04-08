@@ -3,4 +3,8 @@ or
    nmap -sCV -p- I
 2) dirsearch -u and gobuster vhost -u http:// -w /usr/share/wordlists/dirb/small.txt -k --append-domain
 
-3) (FOR DIR ENUMERATION ON YOUR KNOWN DOMAINS)--> gobuster dir http://<example.domain.com>/ -w /usr/share/wordlists/dirb/cmmon.txt
+3) (FOR DIR ENUMERATION ON YOUR KNOWN DOMAINS)--> gobuster dir http://<example.domain.com>/ -w /usr/share/wordlists/dirb/common.txt -b 404,403
+ or
+
+4)
+ 
