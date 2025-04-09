@@ -76,7 +76,8 @@ it has 4 parts:
 So when i open a PC, the 'Boot loader" loads the OS at RAM, the kernel starts the "start-ups" services and then every time you open a program: the OS loads it to the RAM, CPU execute the orders and the OS handle the data and communication user-program.
 
 -------------------------------------Networking--------------------------------------
-\nThe base of nowadays networks are the Nodes and the Links
+
+The base of nowadays networks are the Nodes and the Links
 Types of networks: 
 1) LAN
 2) WAN
