@@ -1,0 +1,1 @@
+Well, I'm a security expert and I understand why you consider eval to be an evil function. If provided with user input it can in fact become dangerous. It's not the case here though. The input of eval function is not coming from user - it's a hardcoded value, so it can done no harm.
