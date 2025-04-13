@@ -1,0 +1,2 @@
+You just found a photo and you want to check it's metadata:
+1)  exiftool <filename>.jpg 
