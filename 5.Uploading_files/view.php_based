@@ -7,4 +7,4 @@ then you could brute to see who can actually access this file. There is two ways
   a) burp and intruder (but is slower)
     catch the request with it, and send it to intruder. there clear$ and then higlight your parameter you want to brute, and click add $. Then select your payload and attack
   b) ffuf (fast)
-    
+     ffuf -u 'http://example/view.php?username=FUZZ&file=test.xlsx' -w names.txt -mc 200 -fr "User not found." -H "Cookie: PHPSESSID=your_cookie_here"
