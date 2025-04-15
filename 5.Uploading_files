@@ -1,7 +1,0 @@
-## This is for uploading files 
-
-so you are in a system and you can upload a file<br/>
-
-1)If you can upload a file and then you can download it at something like: http://<example>/view.php?username=aaa&file=test.xlsx
-then you could brute to see who can actually access this file. There is two ways to do it.
-  a)ffa
