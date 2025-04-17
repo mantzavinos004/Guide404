@@ -1,0 +1,9 @@
+🔥 1. Havoc
+Havoc is an open-source post-exploitation Command and Control (C2) framework, similar to Cobalt Strike or Sliver.
+It’s used by ethical hackers, red teams, or threat actors to control compromised machines (called agents or demons) during simulated or real attacks.
+
+🛠️ It helps you generate payloads (malicious programs).
+
+📡 Communicates with infected targets over a C2 channel.
+
+🎮 Provides a GUI for managing sessions, sending commands, uploading files, etc.
