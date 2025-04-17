@@ -1,0 +1,8 @@
+🧠  NASM
+NASM = Netwide Assembler, a low-level x86 assembler.
+
+In Havoc:
+
+It’s used to assemble small pieces of shellcode.
+
+Often helps build “stager” payloads (tiny initial shellcode that downloads the main payload).
