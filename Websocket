@@ -1,0 +1,6 @@
+🌐 2. WebSocket
+A WebSocket is a persistent, full-duplex communication channel over a single TCP connection.
+
+Think of it like a chat — both sides can talk anytime.
+
+Why it matters? It’s how you (the attacker) interact with the backend — managing sessions, sending commands to victims, etc.
