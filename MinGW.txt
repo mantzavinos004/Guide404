@@ -1,0 +1,6 @@
+🧱 MinGW
+MinGW (Minimalist GNU for Windows) is a cross-compiler that lets you compile Windows programs from Linux.
+
+In Havoc:
+
+Used to compile payloads for Windows (EXE, DLL, shellcode) on your Linux attacker box.
