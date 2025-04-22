@@ -1,0 +1,29 @@
+## This is for the windows targets:
+Ports to pay attention:
+445 SMB
+389 LDAP
+1433 MSSQL
+
+normally you will get some creds for win machines.
+You should try them to find what they are for
+
+1) netexec ldap <targetIP> -u <username> -p <password>
+and you will get smb and ldap confirmation
+
+2) nxc smb <TargetIP> -u '<username>' -p '<password>' --shares
+and you getw all the smb shares
+
+3) crackmapexec smb <targetIP> -u <username> -p <password> --users or --computers
+
+and now you get the info you wanted:
+
+1) smbclient -L //targetip -U <username>
+and then
+2) smbclient //targetip -U <username>
+>ls
+and you get the files
+3)
+
+Then use bloodhund to find the connections and then use impacet tools.
+
+
