@@ -6,5 +6,6 @@ or
 3) (FOR DIR ENUMERATION ON YOUR KNOWN DOMAINS)--> gobuster dir -u http://<example.domain.com>/ -w /usr/share/wordlists/dirb/common.txt -b 404,403
  or
 
-4)
+4) ffuf -c -u "http://<domain>/FUZZ" -w /usr/share/wordlists/dirb/common.txt 
+
  
