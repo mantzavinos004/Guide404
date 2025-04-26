@@ -1,0 +1,28 @@
+##    Simple Network Managment Protocol
+
+A protocol used for monitoring and managment network devices such as routers, switches, servers, printers and IoT. It enables administrators to collect data, configure settings and monitor network perfomance remotely!
+Operates using client-server model:
+-> SNMP Manager (the main system)
+-> SNMP Agent ( the client)
+-> MIB (Managment Information Base)
+
+Communication:
+->GET (manager requests data)
+->SET (manager sets configurations)
+->TRAP (the agent sends an alert to the manager, when an event occurs)
+->WALK (manager retrieves multiple pieces of data from agents)
+
+Versions:
+1) SNMPv1 - Basic, lacks of security
+2) SNMPv2c - Bulk data retrieval, lacks security
+3) SNMP3v - More secured (encryption/authentication)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1) snmp-check <targetIP>
+2) snmpwalk -v 2c -c public <targetIP>        (a tool to fetch hierarchical SNMP data from devices, it goes through MIB)
+
+
+--------------------------------------------------------------------------------------------------------------- Some known vulns ---------------------------------------------------------------------------------------------------------
+
+1) daloradius server of FreeRADIUS uses the domain: http://<targetIP>/daloradius/........    and uses the default creds: administrator:radius   at http://ip/daloradius/app/operators/login.php
