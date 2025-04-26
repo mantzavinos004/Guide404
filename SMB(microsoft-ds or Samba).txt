@@ -1,0 +1,12 @@
+## Server Message Block   (microsoft-ds)
+
+Is a network protocol used for file sharing, printer sharing and interprocess communication between computers on a network
+On windows or at linux/macOS as Samba
+
+Client-server model
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1) enum4linux   (for linux)   or    smbclient   (for windows)
+
+2) crackmapexec smb <targetIP> -u "<username>" -p "<password>" --rid-brute | grep SidTypeUser
