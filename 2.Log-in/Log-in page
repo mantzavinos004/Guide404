@@ -13,3 +13,13 @@ if you have the code, try to find some mistakes (chatgtp,deepseek). If you find 
       Your target are the hashes (usually md5's) or emails of the user/admin. Go to https://crackstation.net/ to crack it :)
     b) is not vulnerable?
 6) after you got the creds and log in, search for exploits maybe
+
+
+
+-----------------------------------------------------------------------------
+at burp POST try:
+POST /login?--env=dev HTTP/1.1
+
+you can try other names for env like : preprod,testing
+
+
