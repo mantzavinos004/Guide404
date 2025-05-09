@@ -26,4 +26,8 @@ and you get the files
 
 Then use bloodhund to find the connections and then use impacet tools.
 
+---------------------------------------------------------------------------------------------------------
+## An all around windows check guide
 
+1. you do the normal scans (nmap for tcp and udp, rustscan)
+2. 
