@@ -12,4 +12,17 @@ dirsearch -u http://furni.htb/ -e php,html,txt -t 50
 
 4) ffuf -c -u "http://<domain>/FUZZ" -w /usr/share/wordlists/dirb/common.txt 
 
- 
+
+------------------------------------------------------------------------------------------------------------------
+The best way to do this is the following:
+
+1. rustscan -a <IP>
+taking the open ports
+
+2. nmap -sC -sV -p53,80,88,135,<...all the open ports> <IP>
+scan with nmap only the open ports since nmap gives a more detailed scan
+
+3. nmap -Pn -sU -top-ports 1000 <IP>
+last do a scan for udp ports just in case
+
+
