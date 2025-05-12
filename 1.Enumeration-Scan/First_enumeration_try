@@ -11,6 +11,7 @@ dirsearch -u http://furni.htb/ -e php,html,txt -t 50
  or
 
 4) ffuf -c -u "http://<domain>/FUZZ" -w /usr/share/wordlists/dirb/common.txt 
+   ffuf -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -u 'http://<ip>' -H "Host:FUZZ.<domain.htb>" -fs 178
 
 
 ------------------------------------------------------------------------------------------------------------------
