@@ -26,7 +26,7 @@ and now you get the info you wanted:
 1) smbclient -L //targetip -U <username>
 and then
 2) smbclient //targetip -U <username>
->ls
+ls
 and you get the files
 3)
 
