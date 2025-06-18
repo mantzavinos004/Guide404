@@ -13,3 +13,9 @@ youy just went through a gobuster scan or a dirscan and found that your domain h
         1) might take the PHPSESSID=e3jmt3a6cknkljlag8mnnrck9k which is an admin cookie, you put it on website coockie and access the /admin.php
 3) if logged in with ssh in a user:
     a) cd /var/log/apache2 , and if there is a access.log , grep <admin_name> access.log, and you gonna find his password
+
+
+!!! if it needs verify: 
+export GIT_SSL_NO_VERIFY=true
+git clone https://example.git
+!!!
