@@ -10,6 +10,8 @@ You should try them to find what they are for
 
 **enumeration:**
 
+ nmap -p- --min-rate 10000 ip
+
 gobuster dir -u "http://name.htb" -w /usr/share/wordlists/seclists/Discovery/Web-Content/dire....txt -t 100 -x php (windows usually use php files)
 
 
