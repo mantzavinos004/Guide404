@@ -1,0 +1,4 @@
+You just got a www-data shell :)
+
+1. First thing you should look for is config files and especially some mysql config logs:
+  cat /var/www/html/roundcube/config/config.inc.php (or something like that)
