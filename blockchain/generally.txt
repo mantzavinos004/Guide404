@@ -15,7 +15,25 @@ Some crypto challs.
 
 5. if you want to call a fuction, for example an attack with 100 damage:
             cast send <targets address> "attack(uint256)" 100 --rpc-url "<url:prot/rpc" --private-key <your key>
-              
-            
+    or maybe something like:
+           cast send 0x746b0a... -r "http://94.237....:port/rpc" 'function strongAttack(uint256)' 20 --private-key 0x202e.... 
+
+6. cast call <target address> "solver()(address)" --rpc-url http....:port/rpc --from <address> --private-key <private kay>
+ it gives what address is stored inside solver()
+
+7. cast logs --from-block 0 --to-block latest --rpc-url <url:port/rpc>
+ it gives all the logs 
+
+10. cast logs --from-block 0 --to-block latest  --rpc-url <rpc url> <Topics field> 0x0000000000000000000000000000000000000000000000000000000000000005
+it clears the result to only those that have <topics field> and then 0x0.....5
+
+11. cast tx  <transaction hash> --rpc-url <rpc url>
+ this finds more details about one transaction hash (from 10.)
+
+12. cast calldata-decode "talk(bytes32)" <input>
+ this decodes the call data that we got from 11.
+
+13. cast send <target address> "talk(bytes32)" <key> --private-key <private key> --rpc-url <rpc url>
+
 
     
