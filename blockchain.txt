@@ -1,0 +1,21 @@
+Some crypto challs.
+
+1. Use solidity and foundry tool
+(curl -L https://foundry.paradigm.xyz | bash
+ and then
+ foundryup
+}
+
+2. Don’t use tx.origin in your contracts except if you know what you are doing, the only good use case that is known for it is to check if the sender is a contract or not.
+
+3. In Ethereum smart contracts, msg.sender represents the address of the immediate caller of a function, which could be another contract or an external account, and is typically used for access control. On the other hand, tx.origin refers to the original external account that initiated the entire transaction chain, which can pose security risks if used for authentication due to potential exploitation in transaction chains. Generally, msg.sender is preferred for its security and context-specific accuracy.
+
+4.  if you want to upload a contract:
+    forge create ./<nameofprogramyoucreated>.sol:<Name of main function> --rpc-url "<url:port/rpc" --broadcast --private-key <yourprivatekey> --constructor-args <put what ever you build for arguments to your constructor, maybe targets address?>
+
+5. if you want to call a fuction, for example an attack with 100 damage:
+            cast send <targets address> "attack(uint256)" 100 --rpc-url "<url:prot/rpc" --private-key <your key>
+              
+            
+
+    
