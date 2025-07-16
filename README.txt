@@ -176,13 +176,13 @@ less	            An alternative to more with more features.
 head	            Prints the first ten lines of STDOUT or a file.
 tail	            Prints the last ten lines of STDOUT or a file.
 sort	            Sorts the contents of STDOUT or a file.
-grep	            Searches for specific results that contain given patterns.
-cut	            Removes sections from each line of files.
-tr	               Replaces certain characters.
-column	         Command-line based utility that formats its input into multiple columns.
-awk	            Pattern scanning and processing language.
-sed	            A stream editor for filtering and transforming text.
-wc	               Prints newline, word, and byte counts for a given input.
+grep	            Searches for specific results that contain given patterns.   grep -v "flase" (excludes all the "flase" files)
+cut	            Removes sections from each line of files.    cut -d":" -f1 (it cuts everything after the first :)
+tr	               Replaces certain characters.         tr ":" " "    (so here we replace all the : with empty)
+column	         Command-line based utility that formats its input into multiple columns.         best is column -t
+awk	            Pattern scanning and processing language.      awk '{print $1, $NF}'  (print the first and the last result of a line)
+sed	            A stream editor for filtering and transforming text.     sed 's/bin/HTB/g' (it replaces bin with HTB at all lines)
+wc	               Prints newline, word, and byte counts for a given input.   (wc -l) => counts the lines of an output
 chmod	            Changes permission of a file or directory.
 chown	            Changes the owner and group of a file or directory.
 
@@ -194,3 +194,30 @@ ABOUT SHORT COMMAND:
 -newermt 2020-03-03	With this option, we set the date. Only files newer than the specified date will be presented.
 -exec ls -al {} \;	This option executes the specified command, using the curly brackets as placeholders for each result. The backslash escapes the next character from being interpreted by the shell because otherwise, the semicolon would terminate the command and not reach the redirection.
 2>/dev/null	         This is a STDERR redirection to the 'null device', which we will come back to in the next section. This redirection ensures that no errors are displayed in the terminal. This redirection must not be an option of the 'find' command.
+
+example: find / -type f -name "*.conf" -newermt 2020-03-03 -size +25k -size -28k 2>/dev/null
+
+
+
+STDIN/OUT/ERR:
+
+Data Stream for Input
+STDIN – 0
+Data Stream for Output
+STDOUT – 1
+Data Stream for Output that relates to an error occurring.
+STDERR – 2
+
+
+When we use the greater-than sign (>) to redirect our STDOUT, a new file is automatically created if it does not already exist. If this file exists, it will be overwritten without asking for confirmation. If we want to append STDOUT to our existing file, we can use the double greater-than sign (>>).
+
+example: athleticKid@htb[/htb]$ find /etc/ -name passwd >> stdout.txt 2>/dev/null
+this find the /etc/passwd files and write them at the end of file stdout.txt, while the errors (2) goes at the null device (nowhere)
+
+example 2: cat << EOF > stream.txt
+you give inputs until you press "EOF", then all are load in the txt file
+
+
+
+
+
