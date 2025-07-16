@@ -1,6 +1,20 @@
 1) rustscan --ulimit 10000 -a IP -- -sC -Pn
 or
    nmap -sCV -p- I
+
+
+Nmap flag	Description
+-sV	   Attempts to determine the version of the services running
+-p <x> or -p-	Port scan for port <x> or scan all ports
+-Pn	   Disable host discovery and scan for open ports
+-A	      Enables OS and version detection, executes in-build scripts for further enumeration 
+-sC	   Scan with the default Nmap scripts
+-v	      Verbose mode
+-sU	   UDP port scan
+-sS	   TCP SYN port scan
+
+
+
 2) dirsearch -u and gobuster vhost -u http:// -w /usr/share/wordlists/dirb/small.txt -k --append-domain
 
 dirsearch -u http://furni.htb/ -e php,html,txt -t 50
@@ -9,6 +23,18 @@ dirsearch -u http://furni.htb/ -e php,html,txt -t 50
 
 3) (FOR DIR ENUMERATION ON YOUR KNOWN DOMAINS)--> gobuster dir -u http://<example.domain.com>/ -w /usr/share/wordlists/dirb/common.txt -b 404,403
  or
+
+
+Gobuster flag	Description
+-e	            Print the full URLs in your console
+-u	            The target URL
+-w	            Path to your wordlist
+-U and -P	   Username and Password for Basic Auth
+-p <x>	      Proxy to use for requests
+-c <http cookies>	Specify a cookie for simulating your auth
+
+
+
 
 4) ffuf -c -u "http://<domain>/FUZZ" -w /usr/share/wordlists/dirb/common.txt 
    ffuf -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -u 'http://<ip>' -H "Host:FUZZ.<domain.htb>" -fs 178
