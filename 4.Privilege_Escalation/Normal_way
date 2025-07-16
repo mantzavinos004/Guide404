@@ -15,6 +15,7 @@ c) id
     chmod +x /usr/local/bin/run-parts
     id
     and then try ssh again!
-d) 
+d) find / -user root -perm -4000 2>/dev/null
+
 
 WINDOWS
