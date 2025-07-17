@@ -134,11 +134,11 @@ lsusb	            Lists USB devices.
 lsof	            Lists opened files.
 lspci	            Lists PCI devices.
 sudo	            Execute command as a different user.
-su	               The su utility requests appropriate user credentials via PAM and switches to that user ID (the default user is the superuser). A shell is then executed.
+su	               The su utility requests appropriate user credentials via PAM and switches to that user ID (the default user is the superuser). A shell is then executed.      su username -c "command" (executes a command as another user)
 useradd	         Creates a new user or update default new user information.
 userdel	         Deletes a user account and related files.
-usermod	         Modifies a user account.
-addgroup	         Adds a group to the system.
+usermod	         Modifies a user account.         --lock username  (option locks/disables the user account)
+addgroup	         Adds a group to the system.      -m username  (to create a home directory for a user)
 delgroup	         Removes a group from the system.
 passwd	         Changes user password.
 dpkg	            Install, remove and configure Debian-based packages.
