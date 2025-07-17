@@ -1,7 +1,7 @@
 1) rustscan --ulimit 10000 -a IP -- -sC -Pn
 or
    nmap -sCV -p- I
-
+MUST:    nmap -sCV 10.10.XX.XX --script vuln -T5
 
 Nmap flag	Description
 -sV	   Attempts to determine the version of the services running
