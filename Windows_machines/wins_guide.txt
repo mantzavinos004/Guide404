@@ -4,6 +4,12 @@ Ports to pay attention:
 389 LDAP
 1433 MSSQL
 
+
+# sudo /etc/init.d/virtualbox-guest-utils stop
+Stopping virtualbox-guest-utils (via systemctl): virtualbox-guest-utils.service.                                                                                     
+└─#  sudo systemctl stop systemd-timesyncd
+└─# sudo ntpdate -s 10.10.11.78
+
 normally you will get some creds for win machines.
 You should try them to find what they are for
 
