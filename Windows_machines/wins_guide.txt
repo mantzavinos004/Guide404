@@ -5,6 +5,8 @@ Ports to pay attention:
 1433 MSSQL
 
 
+https://github.com/ly4k/Certipy/wiki
+
 # sudo /etc/init.d/virtualbox-guest-utils stop
 Stopping virtualbox-guest-utils (via systemctl): virtualbox-guest-utils.service.                                                                                     
 └─#  sudo systemctl stop systemd-timesyncd
