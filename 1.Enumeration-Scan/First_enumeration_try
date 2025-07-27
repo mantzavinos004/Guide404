@@ -43,6 +43,8 @@ Gobuster flag	Description
 
 5) whatweb name.htb
 
+6) dig example.com
+
 ------------------------------------------------------------------------------------------------------------------
 The best way to do this is the following:
 
@@ -56,3 +58,19 @@ scan with nmap only the open ports since nmap gives a more detailed scan
 last do a scan for udp ports just in case
 
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+Some recon things :)
+
+1. robots.txt is usefull, there you see what pages are disallowed from crawlers
+2. security.txt too  (try for xxxx.com/security.txt)
+3. /.well-known/security.txt might have some security isssues there too
+4. dig example.com       (taking the ip to resolve)
+5. curl http://51.158.xx.xx/ -v          (usefull info)
+5. curl https://hackycorp.com/ -v -H "Host: test"      (usefull info)
+6. at the url of site, click the lock with the cross red line. There you  inspect SSL certificates for valuable information 
+and leverage alternative names to access different parts of a web application.
+maybe something like 1095u89j1.example.com works.
+7. some times it helps to change http and https and watch again for the above (TLS certs)
+8. ffuf -w /usr/share/wordlists/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -u https://xxx.com -H "Host: FUZZ.xxx.com" -fr recon_07
+(with fr you dont see all the responses that have recon 07)
+9.
