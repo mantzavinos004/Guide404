@@ -296,4 +296,62 @@ Double ampersand characters (&&)         echo '1' && ls MISSING_FILE && echo '3'
 Pipes (|)
 
 
+TASK SCHEDULING
+with systemd, which is a deamon service that is used in Linux systems such as Ubuntu, Redhat Linux, and Solaris to start processes and scripts at a specific time. With it, we can set up processes and scripts to run at a specific time or time interval and can also specify specific events and triggers that will trigger a specific task. To do this, we need to take some steps and precautions before our scripts or processes are automatically executed by the system. 
+Generally:
+1. Create a timer (schedules when your mytimer.service should run)
+2. Create a service (executes the commands or script)
+3. Activate the timer
+
+
+To create a timer for systemd, we need to create a directory where the timer script will be stored.
+1. sudo mkdir /etc/systemd/system/mytimer.timer.d
+2. sudo nano /etc/systemd/system/mytimer.timer
+>.txt
+[Unit]
+Description=My Timer
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=1hour
+
+[Install]
+WantedBy=timers.target
+
+Here we set a description and specify the full path to the script we want to run. The "multi-user.target" is the unit system that is activated when starting a normal multi-user mode. It defines the services that should be started on a normal system startup.
+
+>.txt
+[Unit]
+Description=My Service
+
+[Service]
+ExecStart=/full/path/to/my/script.sh
+
+[Install]
+WantedBy=multi-user.target
+
+After changes:
+sudo systemctl daemon-reload
+sudo systemctl start mytimer.timer
+sudo systemctl enable mytimer.timer
+
+CRON
+Cron is another tool that can be used in Linux systems to schedule and automate processes.
+For example, such a "crontab" could look like this:
+mins|hours|days|weeks|days-of-the-week
+Code: txt
+# System Update
+0 */6 * * * /path/to/update_software.sh
+
+# Execute Scripts
+0 0 1 * * /path/to/scripts/run_scripts.sh
+
+# Cleanup DB
+0 0 * * 0 /path/to/scripts/clean_database.sh
+
+# Backups
+0 0 * * 7 /path/to/scripts/backup.sh
+The first task, System Update, should be executed once every sixth hour. This is indicated by the entry 0 */6 in the hour column. The task is executed by the script update_software.sh, whose path is given in the last column.
+
+The second task, Execute Scripts, is to be executed every first day of the month at midnight. This is indicated by the entries 0 and 0 in the minute and hour columns and 1 in the days-of-the-month column. The task is executed by the run_scripts.sh script, whose path is given in the last column.
 
