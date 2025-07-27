@@ -2,6 +2,7 @@
 or
    nmap -sCV -p- I
 MUST:    nmap -sCV 10.10.XX.XX --script vuln -T5
+         nmap -A -p- 10.10.XX.XX -T4
 
 Nmap flag	Description
 -sV	   Attempts to determine the version of the services running
@@ -38,6 +39,7 @@ Gobuster flag	Description
 
 4) ffuf -c -u "http://<domain>/FUZZ" -w /usr/share/wordlists/dirb/common.txt 
    ffuf -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -u 'http://<ip>' -H "Host:FUZZ.<domain.htb>" -fs 178
+   ffuf -w /usr/share//wordlists/bitquark_subdomains_top100K.txt -H "Host:FUZZ.xxxx.xxx" -u http://xxxx.xxx/ -mc 200 
 
 5) whatweb name.htb
 
