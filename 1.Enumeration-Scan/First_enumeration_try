@@ -67,7 +67,7 @@ Some recon things :)
 2. security.txt too  (try for xxxx.com/security.txt)
 3. /.well-known/security.txt might have some security isssues there too
 4. dig example.com       (taking the ip to resolve)
-5. curl http://51.158.xx.xx/ -v          (usefull info)
+5. curl http://51.158.xx.xx/ -v    | jq .       (usefull info and the jq makes it nice)
 5. curl https://hackycorp.com/ -v -H "Host: test"      (usefull info)
 6. at the url of site, click the lock with the cross red line. There you  inspect SSL certificates for valuable information 
 and leverage alternative names to access different parts of a web application.
