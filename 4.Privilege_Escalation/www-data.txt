@@ -41,5 +41,6 @@ maybe a sql dump
 3. find / -type f -perm -04000 -ls 2>/dev/null
 and search for anything you found poc exploits
 
+4. cd /var/mail
 
 
