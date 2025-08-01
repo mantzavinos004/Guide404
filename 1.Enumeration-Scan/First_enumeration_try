@@ -18,6 +18,8 @@ Nmap flag	Description
 
 2) dirsearch -u and gobuster vhost -u http:// -w /usr/share/wordlists/dirb/small.txt -k --append-domain
 
+feroxbuster -u http://xxxx.htb               (much faster)
+
 dirsearch -u http://furni.htb/ -e php,html,txt -t 50
 
 
