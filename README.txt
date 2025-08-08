@@ -127,6 +127,67 @@ That has 7 layers:
 2)Data Link            Machine-Machine
 1)Physical             wires/signals
 
+Networking Services
+
+SSH = Secure Shell is a network protocol that allows the secure transmission of data and commands over a network.
+The most commonly used SSH server is openssh server. Its free and open-source
+Admins uses OpenSSH to securely manage systems remotly.
+
+Install openssh => sudo apt install openssh-server -y
+Server status => systemctl status ssh
+You can edit the configurations of ssh in /etc/ssh/sshd_config
+
+
+NFS = Network File System is a network protocol that allows us to store and manage files on remote systems as if they were stored on the local system.
+Examples: NFS-UTILS, NFS-Ganesha and OpenNFS
+
+install nfs with => sudo apt install nfs-kernel-server -y
+and check status => systemctl status nfs-kernel-server
+Here are some important access rights that can be configured in NFS:
+We can configure NFS via the configuration file /etc/exports
+
+Permissions	Description
+rw	               Gives users and systems read and write permissions to the shared directory.
+ro	               Gives users and systems read-only access to the shared directory.
+no_root_squash	   Prevents the root user on the client from being restricted to the rights of a normal user.
+root_squash	      Restricts the rights of the root user on the client to the rights of a normal user.
+sync	            Synchronizes the transfer of data to ensure that changes are only transferred after they have been saved on the file system.
+async	            Transfers data asynchronously, which makes the transfer faster, but may cause inconsistencies in the file system if changes have not been fully committed.
+
+Example: 
+mkdir nfs_sharing
+echo '/home/xxx/nfs_sharing hostname(rw,sync,no_root_squash)' >> /etc/exports
+cat /etc/exports | grep -v "#"
+
+it should print your line only
+
+and then mount your drectory to your target:
+mkdir ~/target_nfs
+mount 10.129.12.17:/home/john/dev_scripts ~/target_nfs
+tree ~/target_nfs
+
+So we have mounted the NFS share (dev_scripts) from our target (10.129.12.17) locally to our system in the mount point target_nfs over the network and can view the contents just as if we were on the target system.
+
+Web Server:
+Apache2: sudo apt install apache2 -y
+and edit /etc/apache2/apache2.conf
+sudo systemctl start apache2
+change the port at => /etc/apache2/ports.conf
+testi ti with: curl -I http://localhost:8080
+
+
+or python3 -m http.server 8000
+
+VPN services
+Among the most widely used VPN solutions for Linux servers are OpenVPN, L2TP/IPsec, PPTP, SSTP, and SoftEther.
+sudo apt install openvpn -y
+you can configure it at  /etc/openvpn/server.conf
+
+another way to start a server is with npm: http-server -p 8080
+or
+with php: php -S 127.0.0.1:8080
+S starts the built-in PHP development server
+
 ----------------------------------------------------------- Linux Commands ----------------------------------------------------
 Command	Description
  man <tool>	      Opens man pages for the specified tool.
@@ -362,4 +423,50 @@ Code: txt
 The first task, System Update, should be executed once every sixth hour. This is indicated by the entry 0 */6 in the hour column. The task is executed by the script update_software.sh, whose path is given in the last column.
 
 The second task, Execute Scripts, is to be executed every first day of the month at midnight. This is indicated by the entries 0 and 0 in the minute and hour columns and 1 in the days-of-the-month column. The task is executed by the run_scripts.sh script, whose path is given in the last column.
+
+BACKUP AND RESTORE
+When backing up data on an Ubuntu system, we have several options, including:
+Rsync   (open source tool that allows fast-secure backups, only transfers the data that have changed)
+Deja Dup     (simple)
+Duplicity      (like Rsync but adds encryption)
+On Ubuntu systems, you can use additional encryption tools like GnuPG, eCryptfs, or LUKS to add another layer of protection to your backups.
+
+Rsync usage:
+sudo apt install rsync -y
+rsync -av /path/to/mydirectory user@backup_server:/path/to/backup/directory
+(backups entire directory, -a for archive to preserve te original file attributes and -v for verbose to provide a detailed output of the progress)
+
+rsync -avz --backup --backup-dir=/path/to/backup/folder --delete /path/to/mydirectory user@backup_server:/path/to/backup/directory
+(With this, we back up the mydirectory to the remote backup_server, preserving the original file attributes, timestamps, and permissions, and enabled compression (-z) for faster transfers. The --backup option creates incremental backups in the directory /path/to/backup/folder, and the --delete option removes files from the remote host that is no longer present in the source directory.)
+
+If we want to restore our directory from our backup server to our local directory, we can use the following command:
+athleticKid@htb[/htb]$ rsync -av user@remote_host:/path/to/backup/directory /path/to/mydirectory
+
+If you want to secure tha transmission use a protocol like SSH:
+rsync -avz -e ssh /path/to/mydirectory user@backup_server:/path/to/backup/directory
+
+Auto-Synchronization
+To enable auto-synchronization using rsync, you can use a combination of cron and rsync to automate the synchronization process.
+
+Therefore we create a new script called RSYNC_Backup.sh, which will trigger the rsync command to sync our local directory with the remote one. However, because we are using a script to perform SSH for the rsync connection, we need to configure key-based authentication. This is to bypass the need to input our password when connecting with SSH.
+
+First, we generate a key pair for our user.
+athleticKid@htb[/htb]$ ssh-keygen -t rsa -b 2048
+(default location is ~/.ssh/id_rsa)
+(Then you need to copy the public key to the remote server)
+athleticKid@htb[/htb]$ ssh-copy-id user@backup_server
+Now you can create the script:
+nano RSYNC_Backup.sh
+
+#!/bin/bash
+rsync -avz -e ssh /path/to/mydirectory user@backup_server:/path/to/backup/directory
+chmod +x RSYNC_Backup.sh
+
+Then create a crontab that tells cron to run the script every hour at 0th minute
+athleticKid@htb[/htb]$ crontab -e
+0 * * * * /path/to/RSYNC_Backup.sh
+
+
+
+FILE SYSTEM MANAGEMENT
 
