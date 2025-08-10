@@ -1,0 +1,8 @@
+If you need to escape the rbash there is some guides, but you might need to find a secret service that runs, just do:
+ps aux
+or 
+netstat -tuln
+or
+ss -tuln   (tulpn)
+or
+netstat -tulpn
