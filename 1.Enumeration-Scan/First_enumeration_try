@@ -19,6 +19,8 @@ Nmap flag	Description
 2) dirsearch -u and gobuster vhost -u http:// -w /usr/share/wordlists/dirb/small.txt -k --append-domain
 
 feroxbuster -u http://xxxx.htb               (much faster)
+feroxbuster -u http://xxx.htb/ -w /usr/share/seclists/Discovery/WebContent/raft-medium-directories.txt -x php,html,js,json,txt,log -t 50 -e
+
 
 dirsearch -u http://furni.htb/ -e php,html,txt -t 50
 
@@ -43,9 +45,11 @@ Gobuster flag	Description
    ffuf -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -u 'http://<ip>' -H "Host:FUZZ.<domain.htb>" -fs 178
    ffuf -w /usr/share//wordlists/bitquark_subdomains_top100K.txt -H "Host:FUZZ.xxxx.xxx" -u http://xxxx.xxx/ -mc 200 
 
-5) whatweb name.htb
+5) whatweb name.htb        (we fingerprinting the web technologies)
 
-6) dig example.com
+6) curl -I http://xxx.htb/      (we check the headers only) 
+
+7) dig example.com
 
 ------------------------------------------------------------------------------------------------------------------
 The best way to do this is the following:
